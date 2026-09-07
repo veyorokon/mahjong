@@ -102,7 +102,7 @@
   #board {
     position: relative;
     width: calc(var(--tw) * 15.75);
-    height: calc(var(--tw) * 11.45);
+    height: calc(var(--tw) * 11.45); /* overwritten per layout */
   }
 
   /* tiles */
@@ -183,6 +183,16 @@
   button.tool:disabled { opacity: 0.45; cursor: default; }
   button.big { grid-column: 1 / -1; min-height: 68px; font-size: 20px; }
   button.tool:focus-visible, button.big:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .layouts { display: grid; gap: 8px; }
+  .layouts .label { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--panel-dim); text-align: center; }
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  button.choice {
+    font-family: var(--font-ui); font-size: 16px; font-weight: 700; min-height: 46px;
+    border-radius: 12px; border: 2px solid rgba(243, 238, 223, 0.25); background: rgba(243, 238, 223, 0.08); color: var(--panel-ink);
+    cursor: pointer; touch-action: manipulation;
+  }
+  button.choice[aria-checked="true"] { background: var(--gold); border-color: var(--gold); color: #2a2410; }
+  button.choice:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
   .panel .note { font-size: 14px; color: var(--panel-dim); text-align: center; line-height: 1.4; margin: 0; }
 
   /* dialogs */
@@ -234,7 +244,17 @@
     .stats { grid-column: 1; }
     .tools { grid-column: 2; grid-template-columns: 1fr 1fr 1fr; }
     button.big { grid-column: auto; min-height: 60px; font-size: 18px; }
-    .panel .note { grid-column: 1 / -1; }
+    .layouts { display: grid; gap: 8px; }
+  .layouts .label { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--panel-dim); text-align: center; }
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  button.choice {
+    font-family: var(--font-ui); font-size: 16px; font-weight: 700; min-height: 46px;
+    border-radius: 12px; border: 2px solid rgba(243, 238, 223, 0.25); background: rgba(243, 238, 223, 0.08); color: var(--panel-ink);
+    cursor: pointer; touch-action: manipulation;
+  }
+  button.choice[aria-checked="true"] { background: var(--gold); border-color: var(--gold); color: #2a2410; }
+  button.choice:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .panel .note { grid-column: 1 / -1; }
   }
   @media (prefers-reduced-motion: reduce) {
     .tile, button.tool, button.big { transition: none; }
@@ -259,6 +279,10 @@
         <button class="tool" id="undoBtn" disabled>Undo</button>
         <button class="tool" id="shuffleBtn">Shuffle</button>
         <button class="big" id="newBtn">New game</button>
+      </div>
+      <div class="layouts" role="radiogroup" aria-label="Layout">
+        <span class="label">Layout</span>
+        <div class="choices" id="layoutChoices"></div>
       </div>
       <p class="note">A tile is free when nothing sits on top of it and one side is open.</p>
     </aside>
@@ -305,26 +329,57 @@
   const $ = s => document.querySelector(s);
   const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
-  // ---------- layout: the classic turtle, coordinates in half-tile units ----------
-  function turtle() {
-    const P = [];
-    const row = (y, x0, x1, z = 0) => { for (let x = x0; x <= x1; x++) P.push({ x2: x * 2, y2: y * 2, z }); };
-    row(0, 1, 12); row(1, 3, 10); row(2, 2, 11); row(3, 1, 12); row(4, 1, 12); row(5, 2, 11); row(6, 3, 10); row(7, 1, 12);
-    P.push({ x2: 0, y2: 7, z: 0 }); P.push({ x2: 26, y2: 7, z: 0 }); P.push({ x2: 28, y2: 7, z: 0 });
-    for (let y = 1; y <= 6; y++) row(y, 4, 9, 1);
-    for (let y = 2; y <= 5; y++) row(y, 5, 8, 2);
-    for (let y = 3; y <= 4; y++) row(y, 6, 7, 3);
-    P.push({ x2: 13, y2: 7, z: 4 });
-    return P;
-  }
-  const POS = turtle();
-  const N = POS.length; // 144
+  // ---------- layouts, coordinates in half-tile units (x2, y2) and layer z ----------
+  function rows(P, z, y0, y1, x0, x1) { for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) P.push({ x2: x * 2, y2: y * 2, z }); }
+  const LAYOUTS = {
+    turtle: { name: 'Turtle', build() {
+      const P = [];
+      rows(P, 0, 0, 0, 1, 12); rows(P, 0, 1, 1, 3, 10); rows(P, 0, 2, 2, 2, 11); rows(P, 0, 3, 4, 1, 12); rows(P, 0, 5, 5, 2, 11); rows(P, 0, 6, 6, 3, 10); rows(P, 0, 7, 7, 1, 12);
+      P.push({ x2: 0, y2: 7, z: 0 }, { x2: 26, y2: 7, z: 0 }, { x2: 28, y2: 7, z: 0 });
+      rows(P, 1, 1, 6, 4, 9); rows(P, 2, 2, 5, 5, 8); rows(P, 3, 3, 4, 6, 7);
+      P.push({ x2: 13, y2: 7, z: 4 });
+      return P;
+    } },
+    pyramid: { name: 'Pyramid', build() {
+      const P = [];
+      rows(P, 0, 0, 7, 0, 9);
+      for (let y2 = 3; y2 <= 13; y2 += 2) for (let x2 = 3; x2 <= 17; x2 += 2) P.push({ x2, y2, z: 1 });
+      for (let y2 = 6; y2 <= 12; y2 += 2) for (let x2 = 6; x2 <= 12; x2 += 2) P.push({ x2, y2, z: 2 });
+      return P;
+    } },
+    fortress: { name: 'Fortress', build() {
+      const P = [];
+      rows(P, 0, 0, 7, 0, 14);
+      for (const [x0, y0] of [[0, 0], [13, 0], [0, 6], [13, 6]]) { rows(P, 1, y0, y0 + 1, x0, x0 + 1); P.push({ x2: x0 * 2 + 1, y2: y0 * 2 + 1, z: 2 }); }
+      for (const x2 of [13, 15]) for (const y2 of [6, 8]) P.push({ x2, y2, z: 1 });
+      return P;
+    } },
+    cross: { name: 'Cross', build() {
+      const P = [];
+      rows(P, 0, 2, 5, 0, 14); rows(P, 0, 0, 1, 4, 10); rows(P, 0, 6, 7, 4, 10);
+      rows(P, 1, 3, 4, 2, 12); rows(P, 1, 1, 2, 5, 9); rows(P, 1, 5, 6, 5, 9);
+      rows(P, 2, 3, 4, 4, 10);
+      return P;
+    } },
+  };
+  const LAYOUT_KEY = 'kitchen-table-mahjong-layout';
+  let layoutId = 'turtle';
+  let POS = [], N = 0, ABOVE = [], LEFT = [], RIGHT = [], EXT = { w: 0, h: 0, maxZ: 0 };
   const overlapY = (a, b) => Math.abs(a.y2 - b.y2) < 2;
-  const ABOVE = POS.map((p, i) => POS.map((q, j) => j).filter(j => POS[j].z === p.z + 1 && Math.abs(POS[j].x2 - p.x2) < 2 && overlapY(p, POS[j])));
-  const LEFT = POS.map((p, i) => POS.map((q, j) => j).filter(j => j !== i && POS[j].z === p.z && overlapY(p, POS[j]) && POS[j].x2 < p.x2 && POS[j].x2 > p.x2 - 4));
-  const RIGHT = POS.map((p, i) => POS.map((q, j) => j).filter(j => j !== i && POS[j].z === p.z && overlapY(p, POS[j]) && POS[j].x2 > p.x2 && POS[j].x2 < p.x2 + 4));
   const isFree = (i, present) => !ABOVE[i].some(j => present[j]) && (!LEFT[i].some(j => present[j]) || !RIGHT[i].some(j => present[j]));
-
+  function useLayout(id) {
+    layoutId = LAYOUTS[id] ? id : 'turtle';
+    POS = LAYOUTS[layoutId].build(); N = POS.length;
+    const idx = POS.map((p, i) => i);
+    ABOVE = POS.map(p => idx.filter(j => POS[j].z === p.z + 1 && Math.abs(POS[j].x2 - p.x2) < 2 && overlapY(p, POS[j])));
+    LEFT = POS.map((p, i) => idx.filter(j => j !== i && POS[j].z === p.z && overlapY(p, POS[j]) && POS[j].x2 < p.x2 && POS[j].x2 > p.x2 - 4));
+    RIGHT = POS.map((p, i) => idx.filter(j => j !== i && POS[j].z === p.z && overlapY(p, POS[j]) && POS[j].x2 > p.x2 && POS[j].x2 < p.x2 + 4));
+    const maxZ = Math.max(...POS.map(p => p.z));
+    EXT = { maxZ, w: (Math.max(...POS.map(p => p.x2)) + 2) / 2 + maxZ * 0.13 + 0.3, h: (Math.max(...POS.map(p => p.y2)) + 2) / 2 * 1.3333 + maxZ * 0.13 + 0.3 };
+    buildTiles();
+    try { localStorage.setItem(LAYOUT_KEY, layoutId); } catch (e) { }
+    document.querySelectorAll('button.choice').forEach(b => b.setAttribute('aria-checked', String(b.dataset.id === layoutId)));
+  }
   // ---------- the tile set ----------
   const KINDS = [];
   for (const s of ['dot', 'bam', 'crak']) for (let n = 1; n <= 9; n++) for (let k = 0; k < 4; k++) KINDS.push(s + n);
@@ -433,18 +488,37 @@
   const board = $('#board'), tiles = [];
   const el = { left: $('#left'), timer: $('#timer'), status: $('#status'), undo: $('#undoBtn'), shuffleBtn: $('#shuffleBtn'), newBtn: $('#newBtn') };
 
-  const order = POS.map((p, i) => i).sort((a, b) => POS[a].z - POS[b].z || POS[a].y2 - POS[b].y2 || POS[a].x2 - POS[b].x2);
-  for (const i of order) {
-    const p = POS[i];
-    const b = document.createElement('button');
-    b.className = 'tile'; b.dataset.i = i; b.type = 'button';
-    b.style.left = `calc(var(--tw) * ${(p.x2 / 2 - p.z * 0.13 + 0.52).toFixed(3)})`;
-    b.style.top = `calc(var(--tw) * ${(p.y2 / 2 * 1.3333 - p.z * 0.13 + 0.52).toFixed(3)})`;
-    b.style.zIndex = p.z * 1000 + p.y2 * 32 + p.x2;
-    b.style.setProperty('--z', p.z);
-    b.addEventListener('click', () => tap(i));
-    board.appendChild(b); tiles[i] = b;
+  function buildTiles() {
+    board.innerHTML = ''; tiles.length = 0;
+    board.style.width = `calc(var(--tw) * ${EXT.w.toFixed(3)})`;
+    board.style.height = `calc(var(--tw) * ${EXT.h.toFixed(3)})`;
+    const order = POS.map((p, i) => i).sort((a, b) => POS[a].z - POS[b].z || POS[a].y2 - POS[b].y2 || POS[a].x2 - POS[b].x2);
+    for (const i of order) {
+      const p = POS[i];
+      const b = document.createElement('button');
+      b.className = 'tile'; b.dataset.i = i; b.type = 'button';
+      b.style.left = `calc(var(--tw) * ${(p.x2 / 2 + (EXT.maxZ - p.z) * 0.13 + 0.05).toFixed(3)})`;
+      b.style.top = `calc(var(--tw) * ${(p.y2 / 2 * 1.3333 + (EXT.maxZ - p.z) * 0.13 + 0.05).toFixed(3)})`;
+      b.style.zIndex = p.z * 1000 + p.y2 * 32 + p.x2;
+      b.style.setProperty('--z', p.z);
+      b.addEventListener('click', () => tap(i));
+      board.appendChild(b); tiles[i] = b;
+    }
+    fit();
   }
+  // layout picker
+  const choices = $('#layoutChoices');
+  for (const [id, L] of Object.entries(LAYOUTS)) {
+    const b = document.createElement('button');
+    b.className = 'choice'; b.type = 'button'; b.dataset.id = id; b.setAttribute('role', 'radio'); b.textContent = L.name;
+    b.addEventListener('click', () => {
+      if (id === layoutId) return;
+      if (started()) { pendingLayout = id; show('#confirmDialog'); }
+      else { useLayout(id); newGame(); }
+    });
+    choices.appendChild(b);
+  }
+  let pendingLayout = null;
 
   const present = () => S.removed.map(r => !r);
   const fmt = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
@@ -478,9 +552,10 @@
 
   function newGame() {
     const kinds = new Array(N);
-    const assign = deal(POS.map((p, i) => i), pairsOf(KINDS));
+    if (pendingLayout) { const id = pendingLayout; pendingLayout = null; useLayout(id); }
+    const assign = deal(POS.map((p, i) => i), pairsOf(KINDS).slice(0, N / 2));
     for (let i = 0; i < N; i++) kinds[i] = assign[i];
-    S = { kinds, removed: new Array(N).fill(false), history: [], elapsed: 0, solved: false };
+    S = { layout: layoutId, kinds, removed: new Array(N).fill(false), history: [], elapsed: 0, solved: false };
     hideDialogs(); paintAll(); save(); startClock();
   }
   function reshuffle() {
@@ -511,7 +586,7 @@
     for (const i of [a, b]) { tiles[i].classList.remove('selected'); tiles[i].classList.add('gone'); S.removed[i] = true; }
     setTimeout(() => { for (const i of [a, b]) if (S.removed[i]) tiles[i].hidden = true; }, 220);
     S.history.push([a, b]); sel = -1;
-    if (S.removed.every(r => r)) { S.solved = true; stopClock(); $('#solvedText').textContent = `All 144 tiles matched in ${fmt(S.elapsed)}.`; show('#solvedDialog'); }
+    if (S.removed.every(r => r)) { S.solved = true; stopClock(); $('#solvedText').textContent = `All ${N} tiles matched in ${fmt(S.elapsed)}.`; show('#solvedDialog'); }
     else if (!hasMoves()) show('#stuckDialog');
     paintPanel(); save();
   }
@@ -539,7 +614,7 @@
   const hideDialogs = () => document.querySelectorAll('.veil').forEach(v => v.hidden = true);
   const started = () => S && S.history.length > 0 && !S.solved;
   el.newBtn.addEventListener('click', () => started() ? show('#confirmDialog') : newGame());
-  $('#confirmKeep').addEventListener('click', hideDialogs);
+  $('#confirmKeep').addEventListener('click', () => { pendingLayout = null; hideDialogs(); });
   $('#confirmNew').addEventListener('click', newGame);
   el.undo.addEventListener('click', undo);
   el.shuffleBtn.addEventListener('click', reshuffle);
@@ -554,20 +629,23 @@
   function fit() {
     const r = wrap.getBoundingClientRect();
     const W = r.width - 8, H = r.height - 8;
-    const tw = Math.max(24, Math.floor(Math.min(W / 15.75, H / 11.45)));
+    const tw = Math.max(24, Math.floor(Math.min(W / EXT.w, H / EXT.h)));
     board.style.setProperty('--tw', tw + 'px');
   }
   new ResizeObserver(fit).observe(wrap);
   window.addEventListener('orientationchange', () => setTimeout(fit, 120));
 
   // ---------- boot ----------
-  let saved = null;
-  try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { }
-  if (saved && Array.isArray(saved.kinds) && saved.kinds.length === N && Array.isArray(saved.removed) && saved.removed.length === N && !saved.solved && saved.removed.some(r => !r)) {
-    S = { kinds: saved.kinds, removed: saved.removed, history: Array.isArray(saved.history) ? saved.history : [], elapsed: saved.elapsed | 0, solved: false };
-    paintAll(); fit(); startClock();
-    if (!hasMoves()) show('#stuckDialog');
-  } else { fit(); newGame(); }
+  let saved = null, savedLayout = 'turtle';
+  try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); savedLayout = localStorage.getItem(LAYOUT_KEY) || 'turtle'; } catch (e) { }
+  if (saved && LAYOUTS[saved.layout] && Array.isArray(saved.kinds) && Array.isArray(saved.removed) && !saved.solved && saved.removed.some(r => !r)) {
+    useLayout(saved.layout);
+    if (saved.kinds.length === N && saved.removed.length === N) {
+      S = { layout: layoutId, kinds: saved.kinds, removed: saved.removed, history: Array.isArray(saved.history) ? saved.history : [], elapsed: saved.elapsed | 0, solved: false };
+      paintAll(); startClock();
+      if (!hasMoves()) show('#stuckDialog');
+    } else newGame();
+  } else { useLayout(savedLayout); newGame(); }
 })();
 </script>
 </body>
