@@ -117,7 +117,7 @@
   /* tiles: a face plus two slanted side faces, so each one reads as a solid block */
   .tile {
     --z: 0;
-    --side: calc(var(--tw) * 0.2);
+    --side: calc(var(--tw) * 0.16);
     position: absolute;
     width: var(--tw); height: calc(var(--tw) * 1.3333);
     padding: 0; border: 0; margin: 0;
@@ -157,11 +157,15 @@
   .tile .k { fill: var(--tile-ink); } .tile .p { fill: var(--tile); } .tile .y { fill: #e8b830; }
   .tile .fb { fill: none; stroke: var(--tile-blue); }
   .tile text { font-family: 'Vazirmatn', 'Geeza Pro', 'Noto Naskh Arabic', sans-serif; font-weight: 700; text-anchor: middle; dominant-baseline: central; }
+  /* a picked-up tile: lifted a little and its face warms to gold, the way a lamp would catch it */
   .tile.selected {
-    transform: translate(-2px, -2px);
-    box-shadow: 0 0 0 3px var(--gold), 0 0 0 calc(var(--tw) * 0.14) var(--gold-glow);
+    transform: translate(calc(var(--side) * -0.6), calc(var(--side) * -0.6));
+    background: linear-gradient(160deg, #fff1b8, #f7d878 60%, #edc65c);
+    filter: drop-shadow(calc(var(--side) * 1.8) calc(var(--side) * 2.6) calc(var(--tw) * 0.16) rgba(0, 0, 0, 0.5));
     z-index: 9000 !important;
   }
+  .tile.selected::before { background: linear-gradient(90deg, #d9b45a, #b88f3a); }
+  .tile.selected::after { background: #b88f3a; }
   .tile.gone { opacity: 0; transform: scale(0.7); pointer-events: none; }
   .tile.shake { animation: shake 320ms ease; }
   @keyframes shake {
@@ -440,7 +444,7 @@
     LEFT = POS.map((p, i) => idx.filter(j => j !== i && POS[j].z === p.z && overlapY(p, POS[j]) && POS[j].x2 < p.x2 && POS[j].x2 > p.x2 - 4));
     RIGHT = POS.map((p, i) => idx.filter(j => j !== i && POS[j].z === p.z && overlapY(p, POS[j]) && POS[j].x2 > p.x2 && POS[j].x2 < p.x2 + 4));
     const maxZ = Math.max(...POS.map(p => p.z));
-    EXT = { maxZ, w: (Math.max(...POS.map(p => p.x2)) + 2) / 2 + maxZ * 0.2 + 0.45, h: (Math.max(...POS.map(p => p.y2)) + 2) / 2 * 1.3333 + maxZ * 0.2 + 0.45 };
+    EXT = { maxZ, w: (Math.max(...POS.map(p => p.x2)) + 2) / 2 + maxZ * 0.16 + 0.4, h: (Math.max(...POS.map(p => p.y2)) + 2) / 2 * 1.3333 + maxZ * 0.16 + 0.4 };
     buildTiles();
     try { localStorage.setItem(LAYOUT_KEY, layoutId); } catch (e) { }
     document.querySelectorAll('button.choice').forEach(b => b.setAttribute('aria-checked', String(b.dataset.id === layoutId)));
@@ -578,8 +582,8 @@
       const p = POS[i];
       const b = document.createElement('button');
       b.className = 'tile'; b.dataset.i = i; b.type = 'button';
-      b.style.left = `calc(var(--tw) * ${(p.x2 / 2 + (EXT.maxZ - p.z) * 0.2 + 0.05).toFixed(3)})`;
-      b.style.top = `calc(var(--tw) * ${(p.y2 / 2 * 1.3333 + (EXT.maxZ - p.z) * 0.2 + 0.05).toFixed(3)})`;
+      b.style.left = `calc(var(--tw) * ${(p.x2 / 2 + (EXT.maxZ - p.z) * 0.16 + 0.05).toFixed(3)})`;
+      b.style.top = `calc(var(--tw) * ${(p.y2 / 2 * 1.3333 + (EXT.maxZ - p.z) * 0.16 + 0.05).toFixed(3)})`;
       b.style.zIndex = p.z * 1000 + (p.x2 + p.y2) * 16 + p.x2;
       b.style.setProperty('--z', p.z);
       b.addEventListener('click', () => tap(i));
