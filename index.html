@@ -146,8 +146,7 @@
   .tile .r { fill: var(--tile-red); } .tile .g { fill: var(--tile-green); } .tile .b { fill: var(--tile-blue); }
   .tile .k { fill: var(--tile-ink); } .tile .p { fill: var(--tile); } .tile .y { fill: #e8b830; }
   .tile .fb { fill: none; stroke: var(--tile-blue); }
-  .tile text { font-family: var(--font-cjk); text-anchor: middle; dominant-baseline: central; }
-  .tile text.lat { font-family: var(--font-ui), 'Geeza Pro', 'Noto Naskh Arabic', sans-serif; font-weight: 700; }
+  .tile text { font-family: 'Vazirmatn', 'Geeza Pro', 'Noto Naskh Arabic', sans-serif; font-weight: 700; text-anchor: middle; dominant-baseline: central; }
   .tile.selected {
     transform: translate(-2px, -2px);
     box-shadow:
@@ -526,8 +525,8 @@
     let out = '';
     for (let k = 0; k < 5; k++) { const a = -Math.PI / 2 + k * 2 * Math.PI / 5; out += `<circle cx="${(30 + 11 * Math.cos(a)).toFixed(1)}" cy="${(30 + 11 * Math.sin(a)).toFixed(1)}" r="8.5" class="r"/>`; }
     out += `<circle cx="30" cy="30" r="5.5" class="y"/>`;
-    out += `<rect x="28.6" y="40" width="2.8" height="16" rx="1.4" class="g"/>`;
-    out += `<ellipse cx="23" cy="49" rx="6" ry="3" transform="rotate(-30 23 49)" class="g"/><ellipse cx="37" cy="52" rx="6" ry="3" transform="rotate(30 37 52)" class="g"/>`;
+    out += `<rect x="28.6" y="40" width="2.8" height="14" rx="1.4" class="g"/>`;
+    out += `<ellipse cx="23" cy="48" rx="6" ry="3" transform="rotate(-30 23 48)" class="g"/><ellipse cx="37" cy="51" rx="6" ry="3" transform="rotate(30 37 51)" class="g"/>`;
     return out;
   };
   const sun = () => {
@@ -536,21 +535,21 @@
     out += `<circle cx="30" cy="32" r="4" class="y"/>`;
     return out;
   };
-  const NUM = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
-  const WIND = { E: '東', S: '南', W: '西', N: '北' };
-  const WIND_FA = { E: 'شرق', S: 'جنوب', W: 'غرب', N: 'شمال' };
-  const FLOWER = ['', '梅', '蘭', '菊', '竹'], SEASON = ['', '春', '夏', '秋', '冬'];
+  // faces are lettered in Persian: she reads Farsi, not Chinese
+  const FA_DIGIT = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+  const WIND = { E: 'شرق', S: 'جنوب', W: 'غرب', N: 'شمال' };
+  const FLOWER = ['', 'آلو', 'ارکیده', 'داوودی', 'بامبو'], SEASON = ['', 'بهار', 'تابستان', 'پاییز', 'زمستان'];
   function face(kind) {
     let body = '';
     if (kind.startsWith('dot')) body = DOTS[+kind.slice(3)];
     else if (kind.startsWith('bam')) body = BAMS[+kind.slice(3)];
-    else if (kind.startsWith('crak')) { const n = +kind.slice(4); body = T(NUM[n], 30, 26, 30, 'b') + T('萬', 30, 59, 32, 'r') + T(String(n), 10, 10, 12, 'b lat'); }
-    else if (kind.startsWith('wind')) body = T(WIND[kind.slice(4)], 30, 43, 44, 'k') + T(WIND_FA[kind.slice(4)], 15, 10, 11, 'k lat');
-    else if (kind === 'dragR') body = T('中', 30, 41, 46, 'r');
-    else if (kind === 'dragG') body = T('發', 30, 41, 46, 'g');
-    else if (kind === 'dragW') body = `<rect x="13" y="12" width="34" height="56" rx="3" class="fb" stroke-width="3.2"/><rect x="19" y="18" width="22" height="44" rx="2" class="fb" stroke-width="1.6"/>`;
-    else if (kind.startsWith('flower')) { const n = +kind.slice(6); body = blossom() + T(FLOWER[n], 30, 68, 15, 'g') + T(String(n), 10, 10, 12, 'r lat'); }
-    else if (kind.startsWith('season')) { const n = +kind.slice(6); body = sun() + T(SEASON[n], 30, 68, 15, 'b') + T(String(n), 10, 10, 12, 'b lat'); }
+    else if (kind.startsWith('crak')) { const n = +kind.slice(4); body = T(FA_DIGIT[n], 30, 28, 40, 'b') + T('هزار', 30, 61, 17, 'r'); }
+    else if (kind.startsWith('wind')) body = T(WIND[kind.slice(4)], 30, 40, 21, 'k');
+    else if (kind === 'dragR') body = T('سرخ', 30, 40, 24, 'r');
+    else if (kind === 'dragG') body = T('سبز', 30, 40, 24, 'g');
+    else if (kind === 'dragW') body = `<rect x="11" y="12" width="38" height="56" rx="3" class="fb" stroke-width="3.2"/><rect x="17" y="18" width="26" height="44" rx="2" class="fb" stroke-width="1.6"/>` + T('سفید', 30, 40, 12, 'b');
+    else if (kind.startsWith('flower')) { const n = +kind.slice(6); body = blossom() + T(FLOWER[n], 30, 68, 11, 'g') + T(FA_DIGIT[n], 10, 10, 12, 'r lat'); }
+    else if (kind.startsWith('season')) { const n = +kind.slice(6); body = sun() + T(SEASON[n], 30, 68, 11, 'b') + T(FA_DIGIT[n], 10, 10, 12, 'b lat'); }
     return `<svg viewBox="0 0 60 80" aria-hidden="true">${body}</svg>`;
   }
   const FACE = {}; KINDS.forEach(k => FACE[k] ||= face(k));
