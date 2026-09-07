@@ -1,0 +1,13 @@
+{
+  "name": "Kitchen Table Mahjong",
+  "short_name": "Mahjong",
+  "start_url": ".",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#276a5e",
+  "theme_color": "#276a5e",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
