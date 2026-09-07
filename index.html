@@ -25,8 +25,8 @@
     --panel-dim: rgba(243, 238, 223, 0.66);
     --tile: #f6f0df;
     --tile-hi: #fffbef;
-    --tile-side: #c9a468;
-    --tile-side-deep: #a5824a;
+    --tile-side: #d9c69c;
+    --tile-side-deep: #b3955c;
     --tile-ink: #23272b;
     --tile-red: #c5352c;
     --tile-green: #1f7a3e;
@@ -114,27 +114,37 @@
     height: calc(var(--tw) * 11.45); /* overwritten per layout */
   }
 
-  /* tiles */
+  /* tiles: a face plus two slanted side faces, so each one reads as a solid block */
   .tile {
     --z: 0;
-    --side: calc(var(--tw) * 0.13);
+    --side: calc(var(--tw) * 0.2);
     position: absolute;
     width: var(--tw); height: calc(var(--tw) * 1.3333);
     padding: 0; border: 0; margin: 0;
-    border-radius: calc(var(--tw) * 0.1);
-    background: linear-gradient(160deg, var(--tile-hi), var(--tile) 55%, #ece4cf);
-    box-shadow:
-      var(--side) var(--side) 0 0 var(--tile-side),
-      var(--side) var(--side) 0 1px var(--tile-side-deep),
-      calc(var(--side) * 1.6 + var(--z) * var(--tw) * 0.04) calc(var(--side) * 2.2 + var(--z) * var(--tw) * 0.06) calc(var(--tw) * 0.22 + var(--z) * var(--tw) * 0.08) rgba(0, 0, 0, calc(0.38 + var(--z) * 0.06));
+    border-radius: calc(var(--tw) * 0.06);
+    background: linear-gradient(160deg, var(--tile-hi), var(--tile) 55%, #ebe3cd);
+    filter: drop-shadow(calc(var(--side) * 1.2 + var(--z) * var(--tw) * 0.03) calc(var(--side) * 1.8 + var(--z) * var(--tw) * 0.05) calc(var(--tw) * 0.1 + var(--z) * var(--tw) * 0.05) rgba(0, 0, 0, 0.45));
     cursor: pointer;
     touch-action: manipulation;
     transition: transform 120ms ease, box-shadow 120ms ease, opacity 200ms ease, filter 160ms ease;
     outline: none;
   }
+  .tile::before, .tile::after { content: ""; position: absolute; pointer-events: none; }
+  .tile::before {  /* right side */
+    left: calc(100% - 0.5px); top: 0; width: var(--side); height: 100%;
+    background: linear-gradient(90deg, var(--tile-side), var(--tile-side-deep));
+    transform: skewY(45deg); transform-origin: 0 0;
+    border-radius: 0 calc(var(--tw) * 0.03) 0 0;
+  }
+  .tile::after {   /* bottom side */
+    left: 0; top: calc(100% - 0.5px); width: 100%; height: var(--side);
+    background: var(--tile-side-deep);
+    transform: skewX(45deg); transform-origin: 0 0;
+    border-radius: 0 0 calc(var(--tw) * 0.03) 0;
+  }
   /* blocked tiles sink into shade so the stacking reads at a glance; free tiles stay bright */
   .tile.blocked {
-    filter: brightness(0.72) saturate(0.55);
+    filter: brightness(0.74) saturate(0.55) drop-shadow(calc(var(--side) * 1.2 + var(--z) * var(--tw) * 0.03) calc(var(--side) * 1.8 + var(--z) * var(--tw) * 0.05) calc(var(--tw) * 0.1 + var(--z) * var(--tw) * 0.05) rgba(0, 0, 0, 0.45));
     background: linear-gradient(160deg, #e9e6d8, #d9d7c8 55%, #cbc9ba);
   }
   #board::before {
@@ -149,12 +159,7 @@
   .tile text { font-family: 'Vazirmatn', 'Geeza Pro', 'Noto Naskh Arabic', sans-serif; font-weight: 700; text-anchor: middle; dominant-baseline: central; }
   .tile.selected {
     transform: translate(-2px, -2px);
-    box-shadow:
-      0 0 0 3px var(--gold),
-      var(--side) var(--side) 0 0 var(--tile-side),
-      var(--side) var(--side) 0 1px var(--tile-side-deep),
-      0 0 0 calc(var(--tw) * 0.16) var(--gold-glow),
-      calc(var(--side) * 1.6) calc(var(--side) * 2.2) calc(var(--tw) * 0.3) rgba(0,0,0,0.45);
+    box-shadow: 0 0 0 3px var(--gold), 0 0 0 calc(var(--tw) * 0.14) var(--gold-glow);
     z-index: 9000 !important;
   }
   .tile.gone { opacity: 0; transform: scale(0.7); pointer-events: none; }
@@ -164,7 +169,7 @@
     20% { transform: translateX(-5px); } 40% { transform: translateX(5px); }
     60% { transform: translateX(-4px); } 80% { transform: translateX(4px); }
   }
-  .tile:focus-visible { box-shadow: 0 0 0 3px var(--gold), var(--side) var(--side) 0 0 var(--tile-side); }
+  .tile:focus-visible { box-shadow: 0 0 0 3px var(--gold); }
 
   /* side panel */
   aside.panel {
@@ -435,7 +440,7 @@
     LEFT = POS.map((p, i) => idx.filter(j => j !== i && POS[j].z === p.z && overlapY(p, POS[j]) && POS[j].x2 < p.x2 && POS[j].x2 > p.x2 - 4));
     RIGHT = POS.map((p, i) => idx.filter(j => j !== i && POS[j].z === p.z && overlapY(p, POS[j]) && POS[j].x2 > p.x2 && POS[j].x2 < p.x2 + 4));
     const maxZ = Math.max(...POS.map(p => p.z));
-    EXT = { maxZ, w: (Math.max(...POS.map(p => p.x2)) + 2) / 2 + maxZ * 0.13 + 0.3, h: (Math.max(...POS.map(p => p.y2)) + 2) / 2 * 1.3333 + maxZ * 0.13 + 0.3 };
+    EXT = { maxZ, w: (Math.max(...POS.map(p => p.x2)) + 2) / 2 + maxZ * 0.2 + 0.45, h: (Math.max(...POS.map(p => p.y2)) + 2) / 2 * 1.3333 + maxZ * 0.2 + 0.45 };
     buildTiles();
     try { localStorage.setItem(LAYOUT_KEY, layoutId); } catch (e) { }
     document.querySelectorAll('button.choice').forEach(b => b.setAttribute('aria-checked', String(b.dataset.id === layoutId)));
@@ -568,14 +573,14 @@
     board.innerHTML = ''; tiles.length = 0;
     board.style.width = `calc(var(--tw) * ${EXT.w.toFixed(3)})`;
     board.style.height = `calc(var(--tw) * ${EXT.h.toFixed(3)})`;
-    const order = POS.map((p, i) => i).sort((a, b) => POS[a].z - POS[b].z || POS[a].y2 - POS[b].y2 || POS[a].x2 - POS[b].x2);
+    const order = POS.map((p, i) => i).sort((a, b) => POS[a].z - POS[b].z || (POS[a].x2 + POS[a].y2) - (POS[b].x2 + POS[b].y2) || POS[a].x2 - POS[b].x2);
     for (const i of order) {
       const p = POS[i];
       const b = document.createElement('button');
       b.className = 'tile'; b.dataset.i = i; b.type = 'button';
-      b.style.left = `calc(var(--tw) * ${(p.x2 / 2 + (EXT.maxZ - p.z) * 0.13 + 0.05).toFixed(3)})`;
-      b.style.top = `calc(var(--tw) * ${(p.y2 / 2 * 1.3333 + (EXT.maxZ - p.z) * 0.13 + 0.05).toFixed(3)})`;
-      b.style.zIndex = p.z * 1000 + p.y2 * 32 + p.x2;
+      b.style.left = `calc(var(--tw) * ${(p.x2 / 2 + (EXT.maxZ - p.z) * 0.2 + 0.05).toFixed(3)})`;
+      b.style.top = `calc(var(--tw) * ${(p.y2 / 2 * 1.3333 + (EXT.maxZ - p.z) * 0.2 + 0.05).toFixed(3)})`;
+      b.style.zIndex = p.z * 1000 + (p.x2 + p.y2) * 16 + p.x2;
       b.style.setProperty('--z', p.z);
       b.addEventListener('click', () => tap(i));
       board.appendChild(b); tiles[i] = b;
