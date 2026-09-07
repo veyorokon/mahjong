@@ -135,7 +135,7 @@
   }
   .tile svg { display: block; width: 100%; height: 100%; border-radius: inherit; }
   .tile .r { fill: var(--tile-red); } .tile .g { fill: var(--tile-green); } .tile .b { fill: var(--tile-blue); }
-  .tile .k { fill: var(--tile-ink); } .tile .p { fill: var(--tile); }
+  .tile .k { fill: var(--tile-ink); } .tile .p { fill: var(--tile); } .tile .y { fill: #e8b830; }
   .tile .fb { fill: none; stroke: var(--tile-blue); }
   .tile text { font-family: var(--font-cjk); text-anchor: middle; dominant-baseline: central; }
   .tile.selected {
@@ -284,7 +284,7 @@
         <span class="label">Layout</span>
         <div class="choices" id="layoutChoices"></div>
       </div>
-      <p class="note">A tile is free when nothing sits on top of it and one side is open.</p>
+      <p class="note">A tile is free when nothing sits on top of it and one side is open. Any two flowers match, and any two suns match.</p>
     </aside>
   </main>
 </div>
@@ -472,6 +472,21 @@
     8: [16, 30, 44].map(x => stick(x, 17, 20, 'g') + stick(x, 63, 20, 'b')).join('') + stick(22, 40, 20, 'r') + stick(38, 40, 20, 'r'),
     9: [[18, 'g'], [40, 'r'], [62, 'b']].map(([y, c]) => [16, 30, 44].map(x => stick(x, y, 20, c)).join('')).join(''),
   };
+  // every flower shares one blossom and every season one sun, so the "any flower matches any flower" rule is visible on the tile
+  const blossom = () => {
+    let out = '';
+    for (let k = 0; k < 5; k++) { const a = -Math.PI / 2 + k * 2 * Math.PI / 5; out += `<circle cx="${(30 + 11 * Math.cos(a)).toFixed(1)}" cy="${(30 + 11 * Math.sin(a)).toFixed(1)}" r="8.5" class="r"/>`; }
+    out += `<circle cx="30" cy="30" r="5.5" class="y"/>`;
+    out += `<rect x="28.6" y="40" width="2.8" height="16" rx="1.4" class="g"/>`;
+    out += `<ellipse cx="23" cy="49" rx="6" ry="3" transform="rotate(-30 23 49)" class="g"/><ellipse cx="37" cy="52" rx="6" ry="3" transform="rotate(30 37 52)" class="g"/>`;
+    return out;
+  };
+  const sun = () => {
+    let out = `<circle cx="30" cy="32" r="10" class="b"/>`;
+    for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4; out += `<rect x="-1.6" y="-19" width="3.2" height="7" rx="1.6" class="b" transform="translate(30 32) rotate(${(a * 180 / Math.PI).toFixed(0)})"/>`; }
+    out += `<circle cx="30" cy="32" r="4" class="y"/>`;
+    return out;
+  };
   const NUM = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
   const WIND = { E: '東', S: '南', W: '西', N: '北' };
   const FLOWER = ['', '梅', '蘭', '菊', '竹'], SEASON = ['', '春', '夏', '秋', '冬'];
@@ -484,8 +499,8 @@
     else if (kind === 'dragR') body = T('中', 30, 41, 46, 'r');
     else if (kind === 'dragG') body = T('發', 30, 41, 46, 'g');
     else if (kind === 'dragW') body = `<rect x="13" y="12" width="34" height="56" rx="3" class="fb" stroke-width="3.2"/><rect x="19" y="18" width="22" height="44" rx="2" class="fb" stroke-width="1.6"/>`;
-    else if (kind.startsWith('flower')) { const n = +kind.slice(6); body = T(FLOWER[n], 30, 46, 36, 'g') + T(String(n), 11, 11, 13, 'r'); }
-    else if (kind.startsWith('season')) { const n = +kind.slice(6); body = T(SEASON[n], 30, 46, 36, 'b') + T(String(n), 11, 11, 13, 'r'); }
+    else if (kind.startsWith('flower')) { const n = +kind.slice(6); body = blossom() + T(FLOWER[n], 30, 68, 15, 'g') + T(String(n), 10, 10, 12, 'r'); }
+    else if (kind.startsWith('season')) { const n = +kind.slice(6); body = sun() + T(SEASON[n], 30, 68, 15, 'b') + T(String(n), 10, 10, 12, 'b'); }
     return `<svg viewBox="0 0 60 80" aria-hidden="true">${body}</svg>`;
   }
   const FACE = {}; KINDS.forEach(k => FACE[k] ||= face(k));
