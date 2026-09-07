@@ -14,7 +14,7 @@
 <title>Kitchen Table Mahjong</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Vazirmatn:wght@400;700&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&text=%E4%B8%80%E4%BA%8C%E4%B8%89%E5%9B%9B%E4%BA%94%E5%85%AD%E4%B8%83%E5%85%AB%E4%B9%9D%E8%90%AC%E6%9D%B1%E5%8D%97%E8%A5%BF%E5%8C%97%E4%B8%AD%E7%99%BC%E6%A2%85%E8%98%AD%E8%8F%8A%E7%AB%B9%E6%98%A5%E5%A4%8F%E7%A7%8B%E5%86%AC%E9%BA%BB%E9%9B%80%E5%92%8C&display=swap">
 <style>
   :root {
@@ -40,6 +40,15 @@
     --font-ui: 'Atkinson Hyperlegible', 'Helvetica Neue', Arial, sans-serif;
     --font-cjk: 'Ma Shan Zheng', 'PingFang TC', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK TC', serif;
   }
+  :root[lang="fa"] { --font-ui: 'Vazirmatn', 'Geeza Pro', 'Noto Naskh Arabic', 'Helvetica Neue', sans-serif; }
+  :root[lang="fa"] .stat span, :root[lang="fa"] .layouts .label { text-transform: none; letter-spacing: 0; font-size: 14px; }
+  button.lang {
+    font-family: var(--font-ui); font-size: 15px; font-weight: 700; color: var(--panel-ink);
+    background: rgba(243, 238, 223, 0.1); border: 2px solid rgba(243, 238, 223, 0.3); border-radius: 999px;
+    padding: 6px 14px; cursor: pointer; touch-action: manipulation; align-self: center;
+  }
+  button.lang:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  header .right { display: flex; align-items: center; gap: 14px; }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --felt: #17403a;
@@ -138,6 +147,7 @@
   .tile .k { fill: var(--tile-ink); } .tile .p { fill: var(--tile); } .tile .y { fill: #e8b830; }
   .tile .fb { fill: none; stroke: var(--tile-blue); }
   .tile text { font-family: var(--font-cjk); text-anchor: middle; dominant-baseline: central; }
+  .tile text.lat { font-family: var(--font-ui), 'Geeza Pro', 'Noto Naskh Arabic', sans-serif; font-weight: 700; }
   .tile.selected {
     transform: translate(-2px, -2px);
     box-shadow:
@@ -265,60 +275,60 @@
 <body>
 <div class="app">
   <header>
-    <h1><span class="cjk" aria-hidden="true">麻雀</span>Kitchen Table Mahjong</h1>
-    <div class="sub" id="status">Match two free tiles to clear them</div>
+    <h1><span class="cjk" aria-hidden="true">麻雀</span><span data-i18n="title">Kitchen Table Mahjong</span></h1>
+    <div class="right"><div class="sub" id="status">Match two free tiles to clear them</div><button class="lang" id="langBtn" type="button">فارسی</button></div>
   </header>
   <main class="play">
     <div class="board-wrap"><div id="board" aria-label="Mahjong board"></div></div>
     <aside class="panel">
       <div class="stats">
-        <div class="stat"><span>Tiles left</span><b><span id="left">144</span></b></div>
-        <div class="stat"><span>Time</span><b id="timer">0:00</b></div>
+        <div class="stat"><span data-i18n="tilesLeft">Tiles left</span><b><span id="left">144</span></b></div>
+        <div class="stat"><span data-i18n="time">Time</span><b id="timer">0:00</b></div>
       </div>
       <div class="tools">
-        <button class="tool" id="undoBtn" disabled>Undo</button>
-        <button class="tool" id="shuffleBtn">Shuffle</button>
-        <button class="big" id="newBtn">New game</button>
+        <button class="tool" id="undoBtn" disabled data-i18n="undo">Undo</button>
+        <button class="tool" id="shuffleBtn" data-i18n="shuffle">Shuffle</button>
+        <button class="big" id="newBtn" data-i18n="newGame">New game</button>
       </div>
       <div class="layouts" role="radiogroup" aria-label="Layout">
-        <span class="label">Layout</span>
+        <span class="label" data-i18n="layout">Layout</span>
         <div class="choices" id="layoutChoices"></div>
       </div>
-      <p class="note">A tile is free when nothing sits on top of it and one side is open. Any two flowers match, and any two suns match.</p>
+      <p class="note" data-i18n="note">A tile is free when nothing sits on top of it and one side is open. Any two flowers match, and any two suns match.</p>
     </aside>
   </main>
 </div>
 
 <div class="veil" id="stuckDialog" hidden role="dialog" aria-modal="true" aria-labelledby="stuckTitle">
   <div class="dialog">
-    <h2 id="stuckTitle">No moves left</h2>
+    <h2 id="stuckTitle" data-i18n="stuckTitle">No moves left</h2>
     <p id="stuckText">None of the free tiles match each other right now. Shuffle the tiles that are still on the table, or go back a move.</p>
     <div class="row three">
-      <button id="stuckUndo">Undo</button>
-      <button id="stuckNew">New game</button>
-      <button class="primary" id="stuckShuffle">Shuffle</button>
+      <button id="stuckUndo" data-i18n="undo">Undo</button>
+      <button id="stuckNew" data-i18n="newGame">New game</button>
+      <button class="primary" id="stuckShuffle" data-i18n="shuffle">Shuffle</button>
     </div>
   </div>
 </div>
 
 <div class="veil" id="confirmDialog" hidden role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
   <div class="dialog">
-    <h2 id="confirmTitle">Start a new game?</h2>
-    <p>This table will be cleared and a fresh one dealt.</p>
+    <h2 id="confirmTitle" data-i18n="confirmTitle">Start a new game?</h2>
+    <p data-i18n="confirmText">This table will be cleared and a fresh one dealt.</p>
     <div class="row">
-      <button id="confirmKeep">Keep playing</button>
-      <button class="primary" id="confirmNew">New game</button>
+      <button id="confirmKeep" data-i18n="keep">Keep playing</button>
+      <button class="primary" id="confirmNew" data-i18n="newGame">New game</button>
     </div>
   </div>
 </div>
 
 <div class="veil" id="solvedDialog" hidden role="dialog" aria-modal="true" aria-labelledby="solvedTitle">
   <div class="dialog">
-    <h2 id="solvedTitle"><span class="cjk" aria-hidden="true">和</span>Table cleared!</h2>
+    <h2 id="solvedTitle"><span class="cjk" aria-hidden="true">和</span><span data-i18n="solvedTitle">Table cleared!</span></h2>
     <p id="solvedText">All 144 tiles matched.</p>
     <div class="row">
-      <button id="solvedLook">Look at it</button>
-      <button class="primary" id="solvedNext">Deal again</button>
+      <button id="solvedLook" data-i18n="look">Look at it</button>
+      <button class="primary" id="solvedNext" data-i18n="dealAgain">Deal again</button>
     </div>
   </div>
 </div>
@@ -327,6 +337,45 @@
 (() => {
   'use strict';
   const $ = s => document.querySelector(s);
+
+  // ---------- language ----------
+  const STR = {
+    en: {
+      title: 'Kitchen Table Mahjong', status: 'Match two free tiles to clear them', statusSel: 'Now tap the other {name}',
+      blocked: 'That tile is blocked. Its top or both sides are covered.', cleared: 'Table cleared',
+      tilesLeft: 'Tiles left', time: 'Time', undo: 'Undo', shuffle: 'Shuffle', newGame: 'New game', layout: 'Layout',
+      turtle: 'Turtle', pyramid: 'Pyramid', fortress: 'Fortress', cross: 'Cross',
+      note: 'A tile is free when nothing sits on top of it and one side is open. Any two flowers match, and any two suns match.',
+      stuckTitle: 'No moves left', stuckText: 'None of the free tiles match each other right now. Shuffle the tiles that are still on the table, or go back a move.',
+      noShuffle: 'The tiles left on the table can\'t be arranged into a winnable game (one is sitting on the other). Undo a few moves or deal a new game.',
+      confirmTitle: 'Start a new game?', confirmText: 'This table will be cleared and a fresh one dealt.', keep: 'Keep playing',
+      solvedTitle: 'Table cleared!', solvedText: 'All {n} tiles matched in {t}.', look: 'Look at it', dealAgain: 'Deal again', other: 'فارسی',
+    },
+    fa: {
+      title: 'ماهجونگ', status: 'دو کاشی آزادِ یکسان را بزنید تا برداشته شوند', statusSel: 'حالا کاشی مشابه را بزنید',
+      blocked: 'این کاشی آزاد نیست؛ رویش یا دو طرفش پوشیده است.', cleared: 'میز پاک شد',
+      tilesLeft: 'کاشی‌های مانده', time: 'زمان', undo: 'برگشت', shuffle: 'بُر زدن', newGame: 'بازی جدید', layout: 'چیدمان',
+      turtle: 'لاک‌پشت', pyramid: 'هرم', fortress: 'قلعه', cross: 'صلیب',
+      note: 'کاشی وقتی آزاد است که چیزی رویش نباشد و یک طرفش باز باشد. هر دو گل با هم جورند و هر دو خورشید هم همین‌طور.',
+      stuckTitle: 'حرکتی نمانده', stuckText: 'هیچ‌کدام از کاشی‌های آزاد با هم جور نیستند. کاشی‌های روی میز را بُر بزنید یا یک حرکت برگردید.',
+      noShuffle: 'کاشی‌های مانده را نمی‌شود طوری چید که بازی قابل برد باشد (یکی روی دیگری است). چند حرکت برگردید یا بازی جدیدی شروع کنید.',
+      confirmTitle: 'بازی جدید شروع شود؟', confirmText: 'این میز پاک می‌شود و میز تازه‌ای چیده می‌شود.', keep: 'ادامه بازی',
+      solvedTitle: 'میز پاک شد!', solvedText: 'همه {n} کاشی در {t} جور شدند.', look: 'نگاه کنم', dealAgain: 'دوباره بچین', other: 'English',
+    },
+  };
+  const LANG_KEY = 'kitchen-table-mahjong-lang';
+  let lang = 'en';
+  try { lang = STR[localStorage.getItem(LANG_KEY)] ? localStorage.getItem(LANG_KEY) : 'en'; } catch (e) { }
+  const t = (k, vars = {}) => (STR[lang][k] || STR.en[k] || k).replace(/\{(\w+)\}/g, (m, v) => vars[v] ?? m);
+  function applyLang() {
+    document.documentElement.lang = lang;
+    const dir = lang === 'fa' ? 'rtl' : 'ltr';
+    document.querySelectorAll('header, aside.panel, .dialog').forEach(el => el.dir = dir);
+    document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+    document.querySelectorAll('button.choice').forEach(b => { b.textContent = t(b.dataset.id); });
+    $('#langBtn').textContent = t('other');
+    try { localStorage.setItem(LANG_KEY, lang); } catch (e) { }
+  }
   const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
   // ---------- layouts, coordinates in half-tile units (x2, y2) and layer z ----------
@@ -489,18 +538,19 @@
   };
   const NUM = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
   const WIND = { E: '東', S: '南', W: '西', N: '北' };
+  const WIND_FA = { E: 'شرق', S: 'جنوب', W: 'غرب', N: 'شمال' };
   const FLOWER = ['', '梅', '蘭', '菊', '竹'], SEASON = ['', '春', '夏', '秋', '冬'];
   function face(kind) {
     let body = '';
     if (kind.startsWith('dot')) body = DOTS[+kind.slice(3)];
     else if (kind.startsWith('bam')) body = BAMS[+kind.slice(3)];
-    else if (kind.startsWith('crak')) body = T(NUM[+kind.slice(4)], 30, 24, 30, 'b') + T('萬', 30, 58, 32, 'r');
-    else if (kind.startsWith('wind')) body = T(WIND[kind.slice(4)], 30, 41, 44, 'k');
+    else if (kind.startsWith('crak')) { const n = +kind.slice(4); body = T(NUM[n], 30, 26, 30, 'b') + T('萬', 30, 59, 32, 'r') + T(String(n), 10, 10, 12, 'b lat'); }
+    else if (kind.startsWith('wind')) body = T(WIND[kind.slice(4)], 30, 43, 44, 'k') + T(WIND_FA[kind.slice(4)], 15, 10, 11, 'k lat');
     else if (kind === 'dragR') body = T('中', 30, 41, 46, 'r');
     else if (kind === 'dragG') body = T('發', 30, 41, 46, 'g');
     else if (kind === 'dragW') body = `<rect x="13" y="12" width="34" height="56" rx="3" class="fb" stroke-width="3.2"/><rect x="19" y="18" width="22" height="44" rx="2" class="fb" stroke-width="1.6"/>`;
-    else if (kind.startsWith('flower')) { const n = +kind.slice(6); body = blossom() + T(FLOWER[n], 30, 68, 15, 'g') + T(String(n), 10, 10, 12, 'r'); }
-    else if (kind.startsWith('season')) { const n = +kind.slice(6); body = sun() + T(SEASON[n], 30, 68, 15, 'b') + T(String(n), 10, 10, 12, 'b'); }
+    else if (kind.startsWith('flower')) { const n = +kind.slice(6); body = blossom() + T(FLOWER[n], 30, 68, 15, 'g') + T(String(n), 10, 10, 12, 'r lat'); }
+    else if (kind.startsWith('season')) { const n = +kind.slice(6); body = sun() + T(SEASON[n], 30, 68, 15, 'b') + T(String(n), 10, 10, 12, 'b lat'); }
     return `<svg viewBox="0 0 60 80" aria-hidden="true">${body}</svg>`;
   }
   const FACE = {}; KINDS.forEach(k => FACE[k] ||= face(k));
@@ -537,7 +587,7 @@
   const choices = $('#layoutChoices');
   for (const [id, L] of Object.entries(LAYOUTS)) {
     const b = document.createElement('button');
-    b.className = 'choice'; b.type = 'button'; b.dataset.id = id; b.setAttribute('role', 'radio'); b.textContent = L.name;
+    b.className = 'choice'; b.type = 'button'; b.dataset.id = id; b.setAttribute('role', 'radio'); b.textContent = t(id);
     b.addEventListener('click', () => {
       if (id === layoutId) return;
       if (started()) { pendingLayout = id; show('#confirmDialog'); }
@@ -574,7 +624,7 @@
     el.timer.textContent = fmt(S.elapsed);
     el.undo.disabled = S.history.length === 0 || S.solved;
     el.shuffleBtn.disabled = S.solved;
-    el.status.textContent = S.solved ? 'Table cleared' : sel >= 0 ? `Now tap the other ${NAME(S.kinds[sel])}` : 'Match two free tiles to clear them';
+    el.status.textContent = S.solved ? t('cleared') : sel >= 0 ? t('statusSel', { name: NAME(S.kinds[sel]) }) : t('status');
   }
 
   function newGame() {
@@ -591,7 +641,7 @@
     if (pos.length < 2) return;
     const assign = deal(pos, pairsOf(kinds));
     if (!assign) {
-      $('#stuckText').textContent = 'The tiles left on the table can\'t be arranged into a winnable game (one is sitting on the other). Undo a few moves or deal a new game.';
+      $('#stuckText').textContent = t('noShuffle');
       $('#stuckShuffle').hidden = true;
       show('#stuckDialog');
       return;
@@ -606,7 +656,7 @@
     const pres = present();
     if (!isFree(i, pres)) {
       const b = tiles[i]; b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
-      el.status.textContent = 'That tile is blocked. Its top or both sides are covered.';
+      el.status.textContent = t('blocked');
       return;
     }
     if (sel === i) { tiles[i].classList.remove('selected'); sel = -1; paintPanel(); return; }
@@ -618,7 +668,7 @@
     for (const i of [a, b]) { tiles[i].classList.remove('selected'); tiles[i].classList.add('gone'); S.removed[i] = true; }
     setTimeout(() => { for (const i of [a, b]) if (S.removed[i]) tiles[i].hidden = true; }, 220);
     S.history.push([a, b]); sel = -1;
-    if (S.removed.every(r => r)) { S.solved = true; stopClock(); $('#solvedText').textContent = `All ${N} tiles matched in ${fmt(S.elapsed)}.`; show('#solvedDialog'); }
+    if (S.removed.every(r => r)) { S.solved = true; stopClock(); $('#solvedText').textContent = t('solvedText', { n: N, t: fmt(S.elapsed) }); show('#solvedDialog'); }
     else if (!hasMoves()) { resetStuck(); show('#stuckDialog'); }
     paintPanel(); save();
   }
@@ -643,7 +693,7 @@
 
   // ---------- dialogs ----------
   const show = s => { $(s).hidden = false; };
-  const resetStuck = () => { $('#stuckShuffle').hidden = false; $('#stuckText').textContent = 'None of the free tiles match each other right now. Shuffle the tiles that are still on the table, or go back a move.'; };
+  const resetStuck = () => { $('#stuckShuffle').hidden = false; $('#stuckText').textContent = t('stuckText'); };
   const hideDialogs = () => { document.querySelectorAll('.veil').forEach(v => v.hidden = true); resetStuck(); };
   const started = () => S && S.history.length > 0 && !S.solved;
   el.newBtn.addEventListener('click', () => started() ? show('#confirmDialog') : newGame());
@@ -667,6 +717,9 @@
   }
   new ResizeObserver(fit).observe(wrap);
   window.addEventListener('orientationchange', () => setTimeout(fit, 120));
+
+  $('#langBtn').addEventListener('click', () => { lang = lang === 'fa' ? 'en' : 'fa'; applyLang(); resetStuck(); if (S) paintPanel(); });
+  applyLang();
 
   // ---------- boot ----------
   let saved = null, savedLayout = 'turtle';
