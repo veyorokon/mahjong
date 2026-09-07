@@ -292,7 +292,7 @@
 <div class="veil" id="stuckDialog" hidden role="dialog" aria-modal="true" aria-labelledby="stuckTitle">
   <div class="dialog">
     <h2 id="stuckTitle">No moves left</h2>
-    <p>None of the free tiles match each other right now. Shuffle the tiles that are still on the table, or go back a move.</p>
+    <p id="stuckText">None of the free tiles match each other right now. Shuffle the tiles that are still on the table, or go back a move.</p>
     <div class="row three">
       <button id="stuckUndo">Undo</button>
       <button id="stuckNew">New game</button>
@@ -575,7 +575,12 @@
     for (let i = 0; i < N; i++) if (!S.removed[i]) { pos.push(i); kinds.push(S.kinds[i]); }
     if (pos.length < 2) return;
     const assign = deal(pos, pairsOf(kinds));
-    if (!assign) return;
+    if (!assign) {
+      $('#stuckText').textContent = 'The tiles left on the table can\'t be arranged into a winnable game (one is sitting on the other). Undo a few moves or deal a new game.';
+      $('#stuckShuffle').hidden = true;
+      show('#stuckDialog');
+      return;
+    }
     for (const i of pos) S.kinds[i] = assign[i];
     S.history = [];
     hideDialogs(); paintAll(); save();
@@ -599,7 +604,7 @@
     setTimeout(() => { for (const i of [a, b]) if (S.removed[i]) tiles[i].hidden = true; }, 220);
     S.history.push([a, b]); sel = -1;
     if (S.removed.every(r => r)) { S.solved = true; stopClock(); $('#solvedText').textContent = `All ${N} tiles matched in ${fmt(S.elapsed)}.`; show('#solvedDialog'); }
-    else if (!hasMoves()) show('#stuckDialog');
+    else if (!hasMoves()) { resetStuck(); show('#stuckDialog'); }
     paintPanel(); save();
   }
   function undo() {
@@ -623,7 +628,8 @@
 
   // ---------- dialogs ----------
   const show = s => { $(s).hidden = false; };
-  const hideDialogs = () => document.querySelectorAll('.veil').forEach(v => v.hidden = true);
+  const resetStuck = () => { $('#stuckShuffle').hidden = false; $('#stuckText').textContent = 'None of the free tiles match each other right now. Shuffle the tiles that are still on the table, or go back a move.'; };
+  const hideDialogs = () => { document.querySelectorAll('.veil').forEach(v => v.hidden = true); resetStuck(); };
   const started = () => S && S.history.length > 0 && !S.solved;
   el.newBtn.addEventListener('click', () => started() ? show('#confirmDialog') : newGame());
   $('#confirmKeep').addEventListener('click', () => { pendingLayout = null; hideDialogs(); });
@@ -655,7 +661,7 @@
     if (saved.kinds.length === N && saved.removed.length === N) {
       S = { layout: layoutId, kinds: saved.kinds, removed: saved.removed, history: Array.isArray(saved.history) ? saved.history : [], elapsed: saved.elapsed | 0, solved: false };
       paintAll(); startClock();
-      if (!hasMoves()) show('#stuckDialog');
+      if (!hasMoves()) { resetStuck(); show('#stuckDialog'); }
     } else newGame();
   } else { useLayout(savedLayout); newGame(); }
 })();
