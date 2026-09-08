@@ -25,8 +25,8 @@
     --panel-dim: rgba(243, 238, 223, 0.66);
     --tile: #f6f0df;
     --tile-hi: #fffbef;
-    --tile-side: #d9c69c;
-    --tile-side-deep: #b3955c;
+    --tile-side: #d6cba9;
+    --tile-side-deep: #bfb28b;
     --tile-ink: #23272b;
     --tile-red: #c5352c;
     --tile-green: #1f7a3e;
@@ -117,10 +117,10 @@
   /* tiles: a face plus two slanted side faces, so each one reads as a solid block */
   .tile {
     --z: 0;
-    --side: calc(var(--tw) * 0.16);
+    --side: calc(var(--tw) * 0.11);
     position: absolute;
-    width: var(--tw); height: calc(var(--tw) * 1.3333);
-    padding: 0; border: 0; margin: 0;
+    width: calc(var(--tw) * 0.9); height: calc(var(--tw) * 1.3333 * 0.9);
+    padding: calc(var(--tw) * 0.055) calc(var(--tw) * 0.055) calc(var(--tw) * 0.07); border: 0; margin: 0;
     border-radius: calc(var(--tw) * 0.06);
     background: linear-gradient(160deg, var(--tile-hi), var(--tile) 55%, #ebe3cd);
     filter: drop-shadow(calc(var(--side) * 1.2 + var(--z) * var(--tw) * 0.03) calc(var(--side) * 1.8 + var(--z) * var(--tw) * 0.05) calc(var(--tw) * 0.1 + var(--z) * var(--tw) * 0.05) rgba(0, 0, 0, 0.36));
@@ -129,7 +129,7 @@
     transition: transform 120ms ease, box-shadow 120ms ease, opacity 200ms ease, filter 160ms ease;
     outline: none;
   }
-  .tile::before, .tile::after { content: ""; position: absolute; pointer-events: none; }
+  .tile::before, .tile::after { content: ""; position: absolute; }  /* sides stay tappable, so a tap on the edge of a tile never falls through to the one below */
   .tile::before {  /* right side */
     left: calc(100% - 0.5px); top: 0; width: var(--side); height: 100%;
     background: linear-gradient(90deg, var(--tile-side), var(--tile-side-deep));
@@ -152,7 +152,7 @@
     background: radial-gradient(ellipse at 50% 55%, rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0) 68%);
     pointer-events: none;
   }
-  .tile svg { display: block; width: 100%; height: 100%; border-radius: inherit; }
+  .tile svg { display: block; width: 100%; height: 100%; overflow: visible; }
   .tile .r { fill: var(--tile-red); } .tile .g { fill: var(--tile-green); } .tile .b { fill: var(--tile-blue); }
   .tile .k { fill: var(--tile-ink); } .tile .p { fill: var(--tile); } .tile .y { fill: #e8b830; }
   .tile .fb { fill: none; stroke: var(--tile-blue); }
@@ -211,6 +211,14 @@
   }
   button.choice[aria-checked="true"] { background: var(--gold); border-color: var(--gold); color: #2a2410; }
   button.choice:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  button.choice.help { min-height: 50px; font-size: 17px; }
+  .dialog.wide { width: min(94vw, 620px); text-align: start; max-height: 92dvh; overflow-y: auto; }
+  .dialog.wide h2 { text-align: center; }
+  .dialog ol { margin: 0; padding-inline-start: 22px; display: grid; gap: 10px; font-size: 17px; line-height: 1.45; color: #2e3338; }
+  .dialog ol b { color: var(--tile-ink); }
+  .demo { position: relative; height: calc(var(--tw) * 2.1); margin: 6px auto 0; width: calc(var(--tw) * 4.4); --tw: 58px; }
+  .demo .tile { cursor: default; }
+  .demo-cap { font-size: 15px; color: #4a4f55; text-align: center; margin: 0; line-height: 1.4; }
   .panel .note { font-size: 14px; color: var(--panel-dim); text-align: center; line-height: 1.4; margin: 0; }
 
   /* dialogs */
@@ -272,6 +280,14 @@
   }
   button.choice[aria-checked="true"] { background: var(--gold); border-color: var(--gold); color: #2a2410; }
   button.choice:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  button.choice.help { min-height: 50px; font-size: 17px; }
+  .dialog.wide { width: min(94vw, 620px); text-align: start; max-height: 92dvh; overflow-y: auto; }
+  .dialog.wide h2 { text-align: center; }
+  .dialog ol { margin: 0; padding-inline-start: 22px; display: grid; gap: 10px; font-size: 17px; line-height: 1.45; color: #2e3338; }
+  .dialog ol b { color: var(--tile-ink); }
+  .demo { position: relative; height: calc(var(--tw) * 2.1); margin: 6px auto 0; width: calc(var(--tw) * 4.4); --tw: 58px; }
+  .demo .tile { cursor: default; }
+  .demo-cap { font-size: 15px; color: #4a4f55; text-align: center; margin: 0; line-height: 1.4; }
   .panel .note { grid-column: 1 / -1; }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -302,7 +318,7 @@
         <span class="label" data-i18n="layout">Layout</span>
         <div class="choices" id="layoutChoices"></div>
       </div>
-      <p class="note" data-i18n="note">A tile is free when nothing sits on top of it and one side is open. Any two flowers match, and any two suns match.</p>
+      <button class="choice help" id="helpBtn" type="button" data-i18n="help">How to play</button>
     </aside>
   </main>
 </div>
@@ -315,6 +331,24 @@
       <button id="stuckUndo" data-i18n="undo">Undo</button>
       <button id="stuckNew" data-i18n="newGame">New game</button>
       <button class="primary" id="stuckShuffle" data-i18n="shuffle">Shuffle</button>
+    </div>
+  </div>
+</div>
+
+<div class="veil" id="helpDialog" hidden role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="dialog wide">
+    <h2 id="helpTitle" data-i18n="help">How to play</h2>
+    <ol>
+      <li data-i18n="r1"></li>
+      <li data-i18n="r2"></li>
+      <li data-i18n="r3"></li>
+      <li data-i18n="r4"></li>
+      <li data-i18n="r5"></li>
+    </ol>
+    <div class="demo" id="helpDemo" aria-hidden="true"></div>
+    <p class="demo-cap" data-i18n="demoCap"></p>
+    <div class="row" style="grid-template-columns: 1fr">
+      <button class="primary" id="helpClose" data-i18n="gotIt">Got it</button>
     </div>
   </div>
 </div>
@@ -358,6 +392,13 @@
       noShuffle: 'The tiles left on the table can\'t be arranged into a winnable game (one is sitting on the other). Undo a few moves or deal a new game.',
       confirmTitle: 'Start a new game?', confirmText: 'This table will be cleared and a fresh one dealt.', keep: 'Keep playing',
       solvedTitle: 'Table cleared!', solvedText: 'All {n} tiles matched in {t}.', look: 'Look at it', dealAgain: 'Deal again', other: 'فارسی',
+      help: 'How to play', gotIt: 'Got it',
+      r1: 'Clear the table by removing tiles two at a time. Two tiles can go together when they look the same. Any two flowers go together, and any two suns go together.',
+      r2: 'Only free tiles can be taken. A tile is free when nothing sits on top of it and its left or right side is open. A tile with neighbours on both sides is stuck, even if its twin is right beside it.',
+      r3: 'Bright tiles are free. Grey tiles are blocked for now. Removing tiles frees the ones they were covering or touching.',
+      r4: 'Tap a free tile, then tap its match. Tap the same tile again to put it back down. A blocked tile shakes if you tap it.',
+      r5: 'Every deal can be won, but the order matters. If every remaining pair is blocked, use Undo to go back or Shuffle to rearrange what is left.',
+      demoCap: 'The two 3-circles on the ends can be taken. The bamboo in the middle is covered and wedged in, and the red tile on top is free.',
     },
     fa: {
       title: 'ماهجونگ', status: 'دو کاشی آزادِ یکسان را بزنید تا برداشته شوند', statusSel: 'حالا کاشی مشابه را بزنید',
@@ -369,6 +410,13 @@
       noShuffle: 'کاشی‌های مانده را نمی‌شود طوری چید که بازی قابل برد باشد (یکی روی دیگری است). چند حرکت برگردید یا بازی جدیدی شروع کنید.',
       confirmTitle: 'بازی جدید شروع شود؟', confirmText: 'این میز پاک می‌شود و میز تازه‌ای چیده می‌شود.', keep: 'ادامه بازی',
       solvedTitle: 'میز پاک شد!', solvedText: 'همه {n} کاشی در {t} جور شدند.', look: 'نگاه کنم', dealAgain: 'دوباره بچین', other: 'English',
+      help: 'راهنمای بازی', gotIt: 'فهمیدم',
+      r1: 'میز را با برداشتن کاشی‌ها دوتا‌دوتا خالی کنید. دو کاشی وقتی با هم می‌روند که شبیه هم باشند. هر دو گل با هم می‌روند و هر دو خورشید هم همین‌طور.',
+      r2: 'فقط کاشی‌های آزاد را می‌شود برداشت. کاشی وقتی آزاد است که چیزی رویش نباشد و سمت چپ یا راستش باز باشد. کاشی‌ای که از دو طرف همسایه دارد گیر است، حتی اگر جفتش درست کنارش باشد.',
+      r3: 'کاشی‌های روشن آزادند. کاشی‌های خاکستری فعلاً گیرند. با برداشتن کاشی‌ها، آن‌هایی که زیرشان یا کنارشان بودند آزاد می‌شوند.',
+      r4: 'یک کاشی آزاد را بزنید، بعد جفتش را. اگر همان کاشی را دوباره بزنید، سر جایش برمی‌گردد. کاشی گیر با زدن تکان می‌خورد.',
+      r5: 'هر چیدمانی قابل برد است، اما ترتیب مهم است. اگر همه جفت‌های مانده گیر بودند، با «برگشت» عقب بروید یا با «بُر زدن» کاشی‌های مانده را دوباره بچینید.',
+      demoCap: 'دو کاشی سه‌دایره در دو سر ردیف را می‌شود برداشت. بامبوی وسط زیر کاشی دیگر و بین دو همسایه گیر است، و کاشی قرمز بالا آزاد است.',
     },
   };
   const LANG_KEY = 'kitchen-table-mahjong-lang';
@@ -380,7 +428,7 @@
     const dir = lang === 'fa' ? 'rtl' : 'ltr';
     document.querySelectorAll('header, aside.panel, .dialog').forEach(el => el.dir = dir);
     document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
-    document.querySelectorAll('button.choice').forEach(b => { b.textContent = t(b.dataset.id); });
+    document.querySelectorAll('button.choice[data-id]').forEach(b => { b.textContent = t(b.dataset.id); });
     $('#langBtn').textContent = t('other');
     try { localStorage.setItem(LANG_KEY, lang); } catch (e) { }
   }
@@ -444,10 +492,10 @@
     LEFT = POS.map((p, i) => idx.filter(j => j !== i && POS[j].z === p.z && overlapY(p, POS[j]) && POS[j].x2 < p.x2 && POS[j].x2 > p.x2 - 4));
     RIGHT = POS.map((p, i) => idx.filter(j => j !== i && POS[j].z === p.z && overlapY(p, POS[j]) && POS[j].x2 > p.x2 && POS[j].x2 < p.x2 + 4));
     const maxZ = Math.max(...POS.map(p => p.z));
-    EXT = { maxZ, w: (Math.max(...POS.map(p => p.x2)) + 2) / 2 + maxZ * 0.16 + 0.4, h: (Math.max(...POS.map(p => p.y2)) + 2) / 2 * 1.3333 + maxZ * 0.16 + 0.4 };
+    EXT = { maxZ, w: (Math.max(...POS.map(p => p.x2)) + 2) / 2 + maxZ * 0.11 + 0.3, h: (Math.max(...POS.map(p => p.y2)) + 2) / 2 * 1.3333 + maxZ * 0.11 + 0.3 };
     buildTiles();
     try { localStorage.setItem(LAYOUT_KEY, layoutId); } catch (e) { }
-    document.querySelectorAll('button.choice').forEach(b => b.setAttribute('aria-checked', String(b.dataset.id === layoutId)));
+    document.querySelectorAll('button.choice[data-id]').forEach(b => b.setAttribute('aria-checked', String(b.dataset.id === layoutId)));
   }
   // ---------- the tile set ----------
   const KINDS = [];
@@ -582,8 +630,8 @@
       const p = POS[i];
       const b = document.createElement('button');
       b.className = 'tile'; b.dataset.i = i; b.type = 'button';
-      b.style.left = `calc(var(--tw) * ${(p.x2 / 2 + (EXT.maxZ - p.z) * 0.16 + 0.05).toFixed(3)})`;
-      b.style.top = `calc(var(--tw) * ${(p.y2 / 2 * 1.3333 + (EXT.maxZ - p.z) * 0.16 + 0.05).toFixed(3)})`;
+      b.style.left = `calc(var(--tw) * ${(p.x2 / 2 + (EXT.maxZ - p.z) * 0.11 + 0.05).toFixed(3)})`;
+      b.style.top = `calc(var(--tw) * ${(p.y2 / 2 * 1.3333 + (EXT.maxZ - p.z) * 0.11 + 0.05).toFixed(3)})`;
       b.style.zIndex = p.z * 1000 + (p.x2 + p.y2) * 16 + p.x2;
       b.style.setProperty('--z', p.z);
       b.addEventListener('click', () => tap(i));
@@ -706,6 +754,21 @@
   const started = () => S && S.history.length > 0 && !S.solved;
   el.newBtn.addEventListener('click', () => started() ? show('#confirmDialog') : newGame());
   $('#confirmKeep').addEventListener('click', () => { pendingLayout = null; hideDialogs(); });
+  (function buildDemo() {
+    const demo = $('#helpDemo');
+    const spec = [['dot3', 0, 0.55, 0, false], ['bam5', 1, 0.55, 0, true], ['dot3', 2, 0.55, 0, false], ['dragR', 1, 0.55, 1, false]];
+    for (const [kind, x, y, z, blocked] of spec) {
+      const b = document.createElement('div');
+      b.className = 'tile' + (blocked ? ' blocked' : '');
+      b.style.left = `calc(var(--tw) * ${(x * 1.06 + (1 - z) * 0.16 + 0.2).toFixed(3)})`;
+      b.style.top = `calc(var(--tw) * ${(y + (1 - z) * 0.16).toFixed(3)})`;
+      b.style.zIndex = z * 10 + x; b.style.setProperty('--z', z);
+      b.innerHTML = FACE[kind];
+      demo.appendChild(b);
+    }
+  })();
+  $('#helpBtn').addEventListener('click', () => show('#helpDialog'));
+  $('#helpClose').addEventListener('click', hideDialogs);
   $('#confirmNew').addEventListener('click', newGame);
   el.undo.addEventListener('click', undo);
   el.shuffleBtn.addEventListener('click', reshuffle);
