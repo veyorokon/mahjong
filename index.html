@@ -123,7 +123,7 @@
     width: calc(var(--tw) * 0.9); height: calc(var(--tw) * 1.3333 * 0.9);
     padding: calc(var(--tw) * 0.055) calc(var(--tw) * 0.055) calc(var(--tw) * 0.07); border: 0; margin: 0;
     border-radius: calc(var(--tw) * 0.06);
-    background: linear-gradient(160deg, var(--tile-hi), var(--tile) 55%, #ebe3cd);
+    background: linear-gradient(160deg, #fffdf4, var(--tile-hi) 55%, #f1eadb);
     filter: drop-shadow(calc(var(--side) * 1.2 + var(--z) * var(--tw) * 0.03) calc(var(--side) * 1.8 + var(--z) * var(--tw) * 0.05) calc(var(--tw) * 0.1 + var(--z) * var(--tw) * 0.05) rgba(0, 0, 0, 0.36));
     cursor: pointer;
     touch-action: manipulation;
@@ -145,8 +145,8 @@
   }
   /* blocked tiles sink into shade so the stacking reads at a glance; free tiles stay bright */
   .tile.blocked {
-    filter: brightness(0.72) saturate(0.5) drop-shadow(calc(var(--side) * 1.2 + var(--z) * var(--tw) * 0.03) calc(var(--side) * 1.8 + var(--z) * var(--tw) * 0.05) calc(var(--tw) * 0.1 + var(--z) * var(--tw) * 0.05) rgba(0, 0, 0, 0.3));
-    background: linear-gradient(160deg, #d9d8cc, #cbcabc 55%, #bdbcae);
+    filter: brightness(0.62) saturate(0.4) drop-shadow(calc(var(--side) * 1.2 + var(--z) * var(--tw) * 0.03) calc(var(--side) * 1.8 + var(--z) * var(--tw) * 0.05) calc(var(--tw) * 0.1 + var(--z) * var(--tw) * 0.05) rgba(0, 0, 0, 0.3));
+    background: linear-gradient(160deg, #d2d1c5, #c3c2b4 55%, #b4b3a5);
   }
   #board::before {
     content: ""; position: absolute; inset: 6% 2% -4% 2%; border-radius: 50%;
