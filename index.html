@@ -128,7 +128,7 @@
     filter: drop-shadow(calc(var(--side) * 1.2 + var(--z) * var(--tw) * 0.03) calc(var(--side) * 1.8 + var(--z) * var(--tw) * 0.05) calc(var(--tw) * 0.1 + var(--z) * var(--tw) * 0.05) rgba(0, 0, 0, 0.36));
     cursor: pointer;
     touch-action: manipulation;
-    transition: transform 120ms ease, box-shadow 120ms ease, opacity 200ms ease, filter 160ms ease;
+    transition: transform 180ms cubic-bezier(0.2, 0.8, 0.3, 1.15), box-shadow 180ms ease, opacity 260ms ease, filter 220ms ease, background 220ms ease;
     outline: none;
   }
   /* the drawn sides are shadows, so this invisible flap keeps the edge tappable: a tap on a tile's edge never falls through to the one below */
@@ -157,8 +157,31 @@
     z-index: 9000 !important;
   }
   .tile.selected { box-shadow: var(--ext-sel); }
-  .tile.gone { opacity: 0; transform: scale(0.7); pointer-events: none; }
+  /* a matched pair lifts off the table together and melts away */
+  .tile.gone { opacity: 0; transform: translate(calc(var(--side) * -1), calc(var(--tw) * -0.3)) scale(1.06); pointer-events: none; transition-duration: 300ms; }
+  /* tiles that a match just opened up give a short golden wink so she sees what became playable */
+  .tile.freed { animation: freed 700ms ease-out; }
+  @keyframes freed {
+    0% { outline: 3px solid var(--gold); outline-offset: 1px; }
+    60% { outline: 3px solid var(--gold); outline-offset: 4px; }
+    100% { outline: 3px solid transparent; outline-offset: 6px; }
+  }
+  /* a fresh deal: tiles settle onto the table one after another, back rows first */
+  .tile.deal { animation: dealIn 380ms cubic-bezier(0.2, 0.8, 0.3, 1) both; animation-delay: var(--d, 0ms); }
+  @keyframes dealIn {
+    from { opacity: 0; transform: translate(calc(var(--side) * -2), calc(var(--tw) * -0.5)); }
+    to { opacity: 1; transform: none; }
+  }
+  /* undo: the pair comes back down */
+  .tile.back { animation: dealIn 260ms ease-out both; }
+  /* hint: the suggested tile nods */
+  .tile.selected.hinted { animation: hintNod 520ms ease-in-out; }
+  @keyframes hintNod {
+    0%, 100% { transform: translate(calc(var(--side) * -0.6), calc(var(--side) * -0.6)); }
+    45% { transform: translate(calc(var(--side) * -1.1), calc(var(--side) * -1.1)) scale(1.04); }
+  }
   .tile.shake { animation: shake 320ms ease; }
+  .tile.blocked.shake { filter: brightness(0.75) saturate(0.5) drop-shadow(calc(var(--side) * 1.2) calc(var(--side) * 1.8) calc(var(--tw) * 0.1) rgba(0, 0, 0, 0.3)); }
   @keyframes shake {
     0%, 100% { transform: translateX(0); }
     20% { transform: translateX(-5px); } 40% { transform: translateX(5px); }
@@ -218,6 +241,13 @@
   .panel .note { font-size: 14px; color: var(--panel-dim); text-align: center; line-height: 1.4; margin: 0; }
 
   /* dialogs */
+  .veil { animation: veilIn 180ms ease-out; }
+  .veil .dialog { animation: popIn 240ms cubic-bezier(0.2, 0.8, 0.3, 1.12) both; }
+  @keyframes veilIn { from { opacity: 0; } }
+  @keyframes popIn { from { opacity: 0; transform: translateY(14px) scale(0.96); } }
+  .stat b span { display: inline-block; }
+  .stat .bump { animation: bump 320ms ease; }
+  @keyframes bump { 40% { transform: scale(1.12); } }
   .veil {
     position: fixed; inset: 0; z-index: 20000;
     display: grid; place-items: center;
@@ -273,8 +303,8 @@
   .panel .note { grid-column: 1 / -1; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .tile, button.tool, button.big { transition: none; }
-    .tile.shake { animation: none; }
+    .tile, button.tool, button.big, .stat b { transition: none; }
+    .tile.shake, .tile.freed, .tile.deal, .tile.back, .tile.hinted, .veil, .veil .dialog, .stat .bump { animation: none; }
   }
 </style>
 </head>
@@ -695,17 +725,21 @@
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { } };
 
   function paintAll() {
-    for (let i = 0; i < N; i++) {
+    const order = POS.map((p, i) => i).sort((a, b) => POS[a].z - POS[b].z || POS[a].y2 - POS[b].y2 || POS[a].x2 - POS[b].x2);
+    let k = 0;
+    for (const i of order) {
       const b = tiles[i];
       b.innerHTML = FACE[S.kinds[i]];
       b.setAttribute('aria-label', NAME(S.kinds[i]));
       b.classList.toggle('gone', S.removed[i]);
       b.hidden = S.removed[i];
-      b.classList.remove('selected');
+      b.classList.remove('selected', 'freed', 'back', 'hinted', 'deal');
+      if (!S.removed[i]) { b.style.setProperty('--d', `${Math.min(k++ * 4, 560)}ms`); void b.offsetWidth; b.classList.add('deal'); }
     }
     sel = -1;
     paintPanel();
   }
+  board.addEventListener('animationend', e => { if (e.target.classList) e.target.classList.remove('deal', 'freed', 'back', 'hinted'); });
   function paintFree() {
     const pres = present();
     for (let i = 0; i < N; i++) if (pres[i]) tiles[i].classList.toggle('blocked', !isFree(i, pres));
@@ -758,8 +792,12 @@
     sel = i; tiles[i].classList.add('selected'); paintPanel();
   }
   function removePair(a, b) {
+    const before = present(), wasFree = before.map((p, i) => p && isFree(i, before));
     for (const i of [a, b]) { tiles[i].classList.remove('selected'); tiles[i].classList.add('gone'); S.removed[i] = true; }
-    setTimeout(() => { for (const i of [a, b]) if (S.removed[i]) tiles[i].hidden = true; }, 220);
+    setTimeout(() => { for (const i of [a, b]) if (S.removed[i]) tiles[i].hidden = true; }, 320);
+    const after = present();
+    for (let i = 0; i < N; i++) if (after[i] && !wasFree[i] && isFree(i, after)) { tiles[i].classList.remove('freed'); void tiles[i].offsetWidth; tiles[i].classList.add('freed'); }
+    el.left.classList.remove('bump'); void el.left.offsetWidth; el.left.classList.add('bump');
     S.history.push([a, b]); sel = -1;
     if (S.removed.every(r => r)) { S.solved = true; stopClock(); $('#solvedText').textContent = t('solvedText', { n: N, t: fmt(S.elapsed) }); show('#solvedDialog'); }
     else if (!hasMoves()) { resetStuck(); show('#stuckDialog'); }
@@ -768,7 +806,7 @@
   function undo() {
     if (!S.history.length || S.solved) return;
     const [a, b] = S.history.pop();
-    for (const i of [a, b]) { S.removed[i] = false; tiles[i].hidden = false; tiles[i].classList.remove('gone'); }
+    for (const i of [a, b]) { S.removed[i] = false; tiles[i].hidden = false; tiles[i].classList.remove('gone'); tiles[i].style.setProperty('--d', '0ms'); void tiles[i].offsetWidth; tiles[i].classList.add('back'); }
     if (sel >= 0) tiles[sel].classList.remove('selected');
     sel = -1; hideDialogs(); paintPanel(); save();
   }
@@ -787,7 +825,7 @@
     if (sel >= 0 && pick[1].includes(sel) && ordered.length > 1) pick = ordered[(hintCursor + 1) % ordered.length];  // never hand back the tile already in hand
     hintCursor = (ordered.indexOf(pick) + 1) % ordered.length;
     if (sel >= 0) tiles[sel].classList.remove('selected');
-    sel = pick[1][0]; tiles[sel].classList.add('selected');
+    sel = pick[1][0]; tiles[sel].classList.add('selected'); tiles[sel].classList.remove('hinted'); void tiles[sel].offsetWidth; tiles[sel].classList.add('hinted');
     paintPanel();
     el.status.textContent = t('hintStatus', { name: NAME(S.kinds[sel]) });
   }
