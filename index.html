@@ -198,12 +198,12 @@
     padding: 16px;
     backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
   }
-  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
   .stat { display: grid; gap: 2px; text-align: center; }
   .stat span { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--panel-dim); }
   .stat b { font-size: 28px; font-variant-numeric: tabular-nums; }
   .stat b small { font-size: 15px; font-weight: 400; color: var(--panel-dim); }
-  .tools { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   button.tool, button.big {
     font-family: var(--font-ui); font-size: 18px; font-weight: 700;
     color: var(--btn-ink); background: linear-gradient(160deg, var(--tile-hi), var(--btn));
@@ -218,9 +218,11 @@
   button.tool:focus-visible, button.big:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
   .layouts { display: grid; gap: 8px; }
   .layouts .label { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--panel-dim); text-align: center; }
-  .choices { display: grid; grid-template-columns: 1fr; gap: 6px; }
+  .choices { display: grid; grid-template-columns: 1fr; gap: 10px; }
   button.choice .nm { flex: 1; text-align: start; }
   button.choice .lv { font-size: 12px; font-weight: 400; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.75; }
+  button.choice .bt { font-size: 12px; font-weight: 400; opacity: 0.7; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  button.choice .bt:empty { display: none; }
   button.choice[data-id] { display: flex; align-items: center; gap: 10px; padding: 0 14px; min-height: 40px; }
   button.choice {
     font-family: var(--font-ui); font-size: 16px; font-weight: 700; min-height: 46px;
@@ -263,8 +265,9 @@
   .dialog h2 { margin: 0; font-size: 26px; text-wrap: balance; }
   .dialog h2 .cjk { font-family: var(--font-cjk); font-weight: 400; color: var(--tile-red); margin-right: 8px; }
   .dialog p { margin: 0; font-size: 17px; line-height: 1.45; color: #4a4f55; }
-  .dialog .row { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; margin-top: 6px; }
+  .dialog .row { display: grid; gap: 14px; grid-template-columns: 1fr 1fr; margin-top: 6px; }
   .dialog .row.three { grid-template-columns: 1fr 1fr 1fr; }
+  .dialog .row.four { grid-template-columns: 1fr 1fr; }
   .dialog button {
     font-family: var(--font-ui); font-size: 17px; font-weight: 700; min-height: 54px;
     border-radius: 12px; border: 2px solid var(--tile-side); background: #fff; color: var(--tile-ink);
@@ -282,19 +285,20 @@
       padding: 4px 18px 16px;
     }
     aside.panel { align-self: center; gap: 18px; padding: 20px 18px; }
-    .stats { gap: 14px; }
-    .stat b { font-size: 34px; }
-    .tools { grid-template-columns: 1fr 1fr 1fr; }
+    .stats { gap: 12px; }
+    .stat b { font-size: 30px; }
+    .tools { grid-template-columns: 1fr 1fr; }
     button.tool { min-height: 66px; font-size: 18px; padding: 0 6px; }
     button.big { min-height: 74px; font-size: 21px; }
   }
   @media (max-width: 699px), (orientation: portrait) {
     header { padding: 10px 16px 2px; }
-    .stats { grid-template-columns: 1fr 1fr; }
+    .stats { grid-template-columns: 1fr 1fr 1fr; }
     aside.panel { grid-template-columns: 1fr 1fr; align-items: center; }
     .stats { grid-column: 1; }
-    .tools { grid-column: 2; grid-template-columns: 1fr 1fr 1fr 1fr; }
-    button.big { grid-column: auto; min-height: 60px; font-size: 18px; }
+    .tools { grid-column: 2; grid-template-columns: 1fr 1fr; gap: 10px; }
+    button.tool { min-height: 60px; }
+    button.big { grid-column: 1 / -1; min-height: 60px; font-size: 18px; }
     .layouts { grid-column: 1 / -1; }
     .choices { grid-template-columns: repeat(4, 1fr); }
     button.choice[data-id] { flex-direction: column; gap: 2px; padding: 6px 8px; }
@@ -319,11 +323,13 @@
       <div class="stats">
         <div class="stat"><span data-i18n="tilesLeft">Tiles left</span><b><span id="left">144</span></b></div>
         <div class="stat"><span data-i18n="time">Time</span><b id="timer">0:00</b></div>
+        <div class="stat"><span data-i18n="moves">Moves</span><b id="moves">0</b></div>
       </div>
       <div class="tools">
         <button class="tool" id="undoBtn" disabled data-i18n="undo">Undo</button>
         <button class="tool" id="hintBtn" data-i18n="hint">Hint</button>
         <button class="tool" id="shuffleBtn" data-i18n="shuffle">Shuffle</button>
+        <button class="tool" id="restartBtn" data-i18n="restart">Restart</button>
         <button class="big" id="newBtn" data-i18n="newGame">New game</button>
       </div>
       <div class="layouts" role="radiogroup" aria-label="Layout">
@@ -339,8 +345,9 @@
   <div class="dialog">
     <h2 id="stuckTitle" data-i18n="stuckTitle">No free pairs</h2>
     <p id="stuckText">Matching tiles are still on the table, but every pair is blocked on both sides or covered. Shuffle the tiles that are left, or go back a move.</p>
-    <div class="row three">
+    <div class="row four">
       <button id="stuckUndo" data-i18n="undo">Undo</button>
+      <button id="stuckRestart" data-i18n="restart">Restart</button>
       <button id="stuckNew" data-i18n="newGame">New game</button>
       <button class="primary" id="stuckShuffle" data-i18n="shuffle">Shuffle</button>
     </div>
@@ -377,8 +384,9 @@
   <div class="dialog">
     <h2 id="solvedTitle"><span class="cjk" aria-hidden="true">和</span><span data-i18n="solvedTitle">Table cleared!</span></h2>
     <p id="solvedText">All 144 tiles matched.</p>
-    <div class="row">
+    <div class="row three">
       <button id="solvedLook" data-i18n="look">Look at it</button>
+      <button id="solvedRestart" data-i18n="playAgain">Play it again</button>
       <button class="primary" id="solvedNext" data-i18n="dealAgain">Deal again</button>
     </div>
   </div>
@@ -394,7 +402,8 @@
     en: {
       title: 'Kitchen Table Mahjong', status: 'Match two free tiles to clear them', statusSel: 'Now tap the other {name}',
       blocked: 'That tile is blocked. Its top or both sides are covered.', cleared: 'Table cleared',
-      tilesLeft: 'Tiles left', time: 'Time', undo: 'Undo', hint: 'Hint', shuffle: 'Shuffle', newGame: 'New game', layout: 'Layout', hintStatus: 'Hint: this one has a free match. Tap the other {name}.',
+      tilesLeft: 'Tiles left', time: 'Time', moves: 'Moves', undo: 'Undo', hint: 'Hint', shuffle: 'Shuffle', restart: 'Restart', playAgain: 'Play it again', newGame: 'New game', layout: 'Layout',
+      confirmRestartTitle: 'Start this deal over?', confirmRestartText: 'The same tiles go back where they were.', best: 'best {t}', won: '{n} won', newBest: 'New best time for this layout!', hintStatus: 'Hint: this one has a free match. Tap the other {name}.',
       turtle: 'Turtle', pyramid: 'Pyramid', fortress: 'Fortress', cross: 'Cross', fish: 'Fish', spider: 'Spider', stacks: 'Eight Stacks', easy: 'easy', medium: 'medium', hard: 'hard',
       note: 'A tile is free when nothing sits on top of it and one side is open. Any two flowers match, and any two suns match.',
       stuckTitle: 'No free pairs', stuckText: 'Matching tiles are still on the table, but every pair is blocked on both sides or covered. Shuffle the tiles that are left, or go back a move.',
@@ -414,7 +423,8 @@
     fa: {
       title: 'ماهجونگ', status: 'دو کاشی آزادِ یکسان را بزنید تا برداشته شوند', statusSel: 'حالا کاشی مشابه را بزنید',
       blocked: 'این کاشی آزاد نیست؛ رویش یا دو طرفش پوشیده است.', cleared: 'میز پاک شد',
-      tilesLeft: 'کاشی‌های مانده', time: 'زمان', undo: 'برگشت', hint: 'راهنمایی', shuffle: 'بُر زدن', newGame: 'بازی جدید', layout: 'چیدمان', hintStatus: 'راهنمایی: این کاشی جفت آزاد دارد. حالا جفتش را بزنید.',
+      tilesLeft: 'کاشی‌های مانده', time: 'زمان', moves: 'حرکت', undo: 'برگشت', hint: 'راهنمایی', shuffle: 'بُر زدن', restart: 'از نو', playAgain: 'دوباره همین', newGame: 'بازی جدید', layout: 'چیدمان',
+      confirmRestartTitle: 'همین چیدمان از نو؟', confirmRestartText: 'همان کاشی‌ها به جای اولشان برمی‌گردند.', best: 'بهترین {t}', won: '{n} برد', newBest: 'بهترین زمان برای این چیدمان!', hintStatus: 'راهنمایی: این کاشی جفت آزاد دارد. حالا جفتش را بزنید.',
       turtle: 'لاک‌پشت', pyramid: 'هرم', fortress: 'قلعه', cross: 'صلیب', fish: 'ماهی', spider: 'عنکبوت', stacks: 'هشت دسته', easy: 'آسان', medium: 'متوسط', hard: 'سخت',
       note: 'کاشی وقتی آزاد است که چیزی رویش نباشد و یک طرفش باز باشد. هر دو گل با هم جورند و هر دو خورشید هم همین‌طور.',
       stuckTitle: 'جفت آزادی نمانده', stuckText: 'کاشی‌های جور هنوز روی میز هستند، اما همه‌شان از دو طرف گیر کرده‌اند یا زیر کاشی دیگری‌اند. کاشی‌های مانده را بُر بزنید یا یک حرکت برگردید.',
@@ -441,7 +451,7 @@
     const dir = lang === 'fa' ? 'rtl' : 'ltr';
     document.querySelectorAll('header, aside.panel, .dialog').forEach(el => el.dir = dir);
     document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
-    document.querySelectorAll('button.choice[data-id]').forEach(b => { b.querySelector('.nm').textContent = t(b.dataset.id); b.querySelector('.lv').textContent = t(LAYOUTS[b.dataset.id].level); });
+    document.querySelectorAll('button.choice[data-id]').forEach(b => { b.querySelector('.nm').textContent = t(b.dataset.id); b.querySelector('.lv').textContent = t(LAYOUTS[b.dataset.id].level); b.querySelector('.bt').textContent = recordText(b.dataset.id); });
     $('#langBtn').textContent = t('other');
     try { localStorage.setItem(LANG_KEY, lang); } catch (e) { }
   }
@@ -543,6 +553,27 @@
     } },
   };
   const LAYOUT_KEY = 'kitchen-table-mahjong-layout';
+  // wins and best time per layout, kept on the device
+  const STATS_KEY = 'kitchen-table-mahjong-stats';
+  let stats = {};
+  try { stats = JSON.parse(localStorage.getItem(STATS_KEY) || '{}') || {}; } catch (e) { }
+  const fmtT = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+  const faNum = str => lang === 'fa' ? String(str).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]) : String(str);
+  function recordText(id) {
+    const r = stats[id];
+    if (!r || !r.won) return '';
+    return `${t('best', { t: faNum(fmtT(r.best)) })} · ${t('won', { n: faNum(r.won) })}`;
+  }
+  function recordWin(id, secs) {
+    const r = stats[id] || { won: 0, best: null };
+    r.won += 1;
+    const isBest = r.best === null || secs < r.best;
+    if (isBest) r.best = secs;
+    stats[id] = r;
+    try { localStorage.setItem(STATS_KEY, JSON.stringify(stats)); } catch (e) { }
+    document.querySelectorAll('button.choice[data-id]').forEach(b => { b.querySelector('.bt').textContent = recordText(b.dataset.id); });
+    return isBest;
+  }
   let layoutId = 'turtle';
   let POS = [], N = 0, ABOVE = [], LEFT = [], RIGHT = [], EXT = { w: 0, h: 0, maxZ: 0 };
   const overlapY = (a, b) => Math.abs(a.y2 - b.y2) < 2;
@@ -709,7 +740,7 @@
   const choices = $('#layoutChoices');
   for (const [id, L] of Object.entries(LAYOUTS)) {
     const b = document.createElement('button');
-    b.className = 'choice'; b.type = 'button'; b.dataset.id = id; b.setAttribute('role', 'radio'); b.innerHTML = `<span class="nm">${t(id)}</span><span class="lv">${t(L.level)}</span>`;
+    b.className = 'choice'; b.type = 'button'; b.dataset.id = id; b.setAttribute('role', 'radio'); b.innerHTML = `<span class="nm">${t(id)}</span><span class="bt">${recordText(id)}</span><span class="lv">${t(L.level)}</span>`;
     b.addEventListener('click', () => {
       if (id === layoutId) return;
       if (started()) { pendingLayout = id; show('#confirmDialog'); }
@@ -748,13 +779,29 @@
     const left = S.removed.filter(r => !r).length;
     el.left.textContent = left;
     el.timer.textContent = fmt(S.elapsed);
+    $('#moves').textContent = S.solved ? 0 : countMoves();
     el.undo.disabled = S.history.length === 0 || S.solved;
     el.shuffleBtn.disabled = S.solved; $('#hintBtn').disabled = S.solved;
+    $('#restartBtn').disabled = S.history.length === 0 && !S.solved;
     el.status.textContent = S.solved ? t('cleared') : sel >= 0 ? t('statusSel', { name: NAME(S.kinds[sel]) }) : t('status');
   }
 
+  // the same tiles back where they started: for trying a different path through a deal
+  function restart() {
+    if (!S) return;
+    S.removed = new Array(N).fill(false); S.history = []; S.elapsed = 0; S.solved = false;
+    pendingAction = null;
+    hideDialogs(); paintAll(); save(); startClock();
+  }
+  function askRestart() {
+    if (!started()) { restart(); return; }
+    pendingAction = 'restart';
+    $('#confirmTitle').textContent = t('confirmRestartTitle'); $('#confirmDialog p').textContent = t('confirmRestartText'); $('#confirmNew').textContent = t('restart');
+    show('#confirmDialog');
+  }
   function newGame() {
     const kinds = new Array(N);
+    pendingAction = null;
     if (pendingLayout) { const id = pendingLayout; pendingLayout = null; useLayout(id); }
     const assign = deal(POS.map((p, i) => i), pairsOf(KINDS).slice(0, N / 2));
     for (let i = 0; i < N; i++) kinds[i] = assign[i];
@@ -798,7 +845,12 @@
     for (let i = 0; i < N; i++) if (after[i] && !wasFree[i] && isFree(i, after)) { tiles[i].classList.remove('freed'); void tiles[i].offsetWidth; tiles[i].classList.add('freed'); }
     el.left.classList.remove('bump'); void el.left.offsetWidth; el.left.classList.add('bump');
     S.history.push([a, b]); sel = -1;
-    if (S.removed.every(r => r)) { S.solved = true; stopClock(); $('#solvedText').textContent = t('solvedText', { n: N, t: fmt(S.elapsed) }); show('#solvedDialog'); }
+    if (S.removed.every(r => r)) {
+      S.solved = true; stopClock();
+      const isBest = recordWin(S.layout, S.elapsed);
+      $('#solvedText').textContent = t('solvedText', { n: N, t: fmt(S.elapsed) }) + (isBest && stats[S.layout].won > 1 ? ' ' + t('newBest') : '');
+      show('#solvedDialog');
+    }
     else if (!hasMoves()) { resetStuck(); show('#stuckDialog'); }
     paintPanel(); save();
   }
@@ -828,6 +880,12 @@
     paintPanel();
     el.status.textContent = t('hintStatus', { name: NAME(S.kinds[sel]) });
   }
+  // how many matching pairs can be taken right now: groups with at least two free tiles
+  function countMoves() {
+    const pres = present(), byG = {};
+    for (let i = 0; i < N; i++) if (pres[i] && isFree(i, pres)) { const g = groupOf(S.kinds[i]); byG[g] = (byG[g] || 0) + 1; }
+    return Object.values(byG).filter(n => n >= 2).length;
+  }
   function hasMoves() {
     const pres = present(), seen = {};
     for (let i = 0; i < N; i++) if (pres[i] && isFree(i, pres)) { const g = groupOf(S.kinds[i]); if (seen[g]) return true; seen[g] = true; }
@@ -843,10 +901,14 @@
   // ---------- dialogs ----------
   const show = s => { $(s).hidden = false; };
   const resetStuck = () => { $('#stuckShuffle').hidden = false; $('#stuckText').textContent = t('stuckText'); };
-  const hideDialogs = () => { document.querySelectorAll('.veil').forEach(v => v.hidden = true); resetStuck(); };
+  const hideDialogs = () => { document.querySelectorAll('.veil').forEach(v => v.hidden = true); resetStuck(); $('#confirmTitle').textContent = t('confirmTitle'); $('#confirmDialog p').textContent = t('confirmText'); $('#confirmNew').textContent = t('newGame'); };
+  let pendingAction = null;
   const started = () => S && S.history.length > 0 && !S.solved;
-  el.newBtn.addEventListener('click', () => started() ? show('#confirmDialog') : newGame());
-  $('#confirmKeep').addEventListener('click', () => { pendingLayout = null; hideDialogs(); });
+  el.newBtn.addEventListener('click', () => { pendingAction = null; started() ? show('#confirmDialog') : newGame(); });
+  $('#confirmKeep').addEventListener('click', () => { pendingLayout = null; pendingAction = null; hideDialogs(); });
+  $('#restartBtn').addEventListener('click', askRestart);
+  $('#stuckRestart').addEventListener('click', restart);
+  $('#solvedRestart').addEventListener('click', restart);
   (function buildDemos() {
     // [kind, x, y, z, blocked, selected]
     const DEMOS = {
@@ -874,7 +936,7 @@
   })();
   $('#helpBtn').addEventListener('click', () => show('#helpDialog'));
   $('#helpClose').addEventListener('click', hideDialogs);
-  $('#confirmNew').addEventListener('click', newGame);
+  $('#confirmNew').addEventListener('click', () => pendingAction === 'restart' ? restart() : newGame());
   el.undo.addEventListener('click', undo);
   el.shuffleBtn.addEventListener('click', reshuffle);
   $('#hintBtn').addEventListener('click', hint);
