@@ -14,7 +14,7 @@
 <title>Kitchen Table Mahjong</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Vazirmatn:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&text=%E4%B8%80%E4%BA%8C%E4%B8%89%E5%9B%9B%E4%BA%94%E5%85%AD%E4%B8%83%E5%85%AB%E4%B9%9D%E8%90%AC%E6%9D%B1%E5%8D%97%E8%A5%BF%E5%8C%97%E4%B8%AD%E7%99%BC%E6%A2%85%E8%98%AD%E8%8F%8A%E7%AB%B9%E6%98%A5%E5%A4%8F%E7%A7%8B%E5%86%AC%E9%BA%BB%E9%9B%80%E5%92%8C&display=swap">
 <style>
   :root {
@@ -40,9 +40,6 @@
     --font-ui: 'Atkinson Hyperlegible', 'Helvetica Neue', Arial, sans-serif;
     --font-cjk: 'Ma Shan Zheng', 'PingFang TC', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK TC', serif;
   }
-  :root[lang="fa"] { --font-ui: 'Vazirmatn', 'Geeza Pro', 'Noto Naskh Arabic', 'Helvetica Neue', sans-serif; }
-  :root[lang="fa"] .stat span, :root[lang="fa"] .layouts .label, :root[lang="fa"] button.choice .lv { text-transform: none; letter-spacing: 0; font-size: 14px; }
-  :root[lang="fa"] button.choice .lv { font-size: 13px; }
   button.lang {
     font-family: var(--font-ui); font-size: 15px; font-weight: 700; color: var(--panel-ink);
     background: rgba(243, 238, 223, 0.1); border: 2px solid rgba(243, 238, 223, 0.3); border-radius: 999px;
@@ -315,7 +312,7 @@
 <div class="app">
   <header>
     <h1><span class="cjk" aria-hidden="true">麻雀</span><span data-i18n="title">Kitchen Table Mahjong</span></h1>
-    <div class="right"><div class="sub" id="status">Match two free tiles to clear them</div><button class="lang" id="langBtn" type="button">فارسی</button></div>
+    <div class="right"><div class="sub" id="status">Match two free tiles to clear them</div></div>
   </header>
   <main class="play">
     <div class="board-wrap"><div id="board" aria-label="Mahjong board"></div></div>
@@ -409,7 +406,7 @@
       stuckTitle: 'No free pairs', stuckText: 'Matching tiles are still on the table, but every pair is blocked on both sides or covered. Shuffle the tiles that are left, or go back a move.',
       noShuffle: 'The tiles left on the table can\'t be arranged into a winnable game (one is sitting on the other). Undo a few moves or deal a new game.',
       confirmTitle: 'Start a new game?', confirmText: 'This table will be cleared and a fresh one dealt.', keep: 'Keep playing',
-      solvedTitle: 'Table cleared!', solvedText: 'All {n} tiles matched in {t}.', look: 'Look at it', dealAgain: 'Deal again', other: 'فارسی',
+      solvedTitle: 'Table cleared!', solvedText: 'All {n} tiles matched in {t}.', look: 'Look at it', dealAgain: 'Deal again',
       help: 'How to play', gotIt: 'Got it',
       r1: 'Clear the table by removing tiles two at a time. Two tiles go together when they look the same. Any two flowers go together, and any two suns go together.',
       c1: 'A pair of 5-circles, and a pair of flowers with different names.',
@@ -420,31 +417,8 @@
       r4: 'Every deal can be won, but the order matters. Sometimes the matching tiles are all wedged in. Then use Undo to go back or Shuffle to rearrange what is left.',
       c4: 'Stuck: the two green tiles match but both are held on both sides, and the free end tiles don\'t match each other.',
     },
-    fa: {
-      title: 'ماهجونگ', status: 'دو کاشی آزادِ یکسان را بزنید تا برداشته شوند', statusSel: 'حالا کاشی مشابه را بزنید',
-      blocked: 'این کاشی آزاد نیست؛ رویش یا دو طرفش پوشیده است.', cleared: 'میز پاک شد',
-      tilesLeft: 'کاشی‌های مانده', time: 'زمان', moves: 'حرکت', undo: 'برگشت', hint: 'راهنمایی', shuffle: 'بُر زدن', restart: 'از نو', playAgain: 'دوباره همین', newGame: 'بازی جدید', layout: 'چیدمان',
-      confirmRestartTitle: 'همین چیدمان از نو؟', confirmRestartText: 'همان کاشی‌ها به جای اولشان برمی‌گردند.', best: 'بهترین {t}', won: '{n} برد', newBest: 'بهترین زمان برای این چیدمان!', hintStatus: 'راهنمایی: این کاشی جفت آزاد دارد. حالا جفتش را بزنید.',
-      turtle: 'لاک‌پشت', pyramid: 'هرم', fortress: 'قلعه', cross: 'صلیب', fish: 'ماهی', spider: 'عنکبوت', stacks: 'هشت دسته', easy: 'آسان', medium: 'متوسط', hard: 'سخت',
-      note: 'کاشی وقتی آزاد است که چیزی رویش نباشد و یک طرفش باز باشد. هر دو گل با هم جورند و هر دو خورشید هم همین‌طور.',
-      stuckTitle: 'جفت آزادی نمانده', stuckText: 'کاشی‌های جور هنوز روی میز هستند، اما همه‌شان از دو طرف گیر کرده‌اند یا زیر کاشی دیگری‌اند. کاشی‌های مانده را بُر بزنید یا یک حرکت برگردید.',
-      noShuffle: 'کاشی‌های مانده را نمی‌شود طوری چید که بازی قابل برد باشد (یکی روی دیگری است). چند حرکت برگردید یا بازی جدیدی شروع کنید.',
-      confirmTitle: 'بازی جدید شروع شود؟', confirmText: 'این میز پاک می‌شود و میز تازه‌ای چیده می‌شود.', keep: 'ادامه بازی',
-      solvedTitle: 'میز پاک شد!', solvedText: 'همه {n} کاشی در {t} جور شدند.', look: 'نگاه کنم', dealAgain: 'دوباره بچین', other: 'English',
-      help: 'راهنمای بازی', gotIt: 'فهمیدم',
-      r1: 'میز را با برداشتن کاشی‌ها دوتا‌دوتا خالی کنید. دو کاشی وقتی با هم می‌روند که شبیه هم باشند. هر دو گل با هم می‌روند و هر دو خورشید هم همین‌طور.',
-      c1: 'یک جفت پنج‌دایره، و یک جفت گل با نام‌های متفاوت.',
-      r2: 'فقط کاشی‌های آزاد را می‌شود برداشت. کاشی وقتی آزاد است که چیزی رویش نباشد و سمت چپ یا راستش باز باشد. کاشی‌های روشن آزادند و خاکستری‌ها فعلاً گیرند.',
-      c2: 'دو کاشی دو سر ردیف را می‌شود برداشت. کاشی وسط زیر کاشی دیگر و بین دو همسایه گیر است. کاشی بالا آزاد است.',
-      r3: 'یک کاشی آزاد را بزنید تا برداشته شود، بعد جفتش را بزنید. اگر همان کاشی را دوباره بزنید، سر جایش برمی‌گردد. کاشی گیر با زدن تکان می‌خورد.',
-      c3: 'کاشی طلایی برداشته شده. با زدن ۳ی سمت راست هر دو پاک می‌شوند.',
-      r4: 'هر چیدمانی قابل برد است، اما ترتیب مهم است. گاهی همه کاشی‌های جور گیر می‌افتند. آن‌وقت با «برگشت» عقب بروید یا با «بُر زدن» کاشی‌های مانده را دوباره بچینید.',
-      c4: 'گیر: دو کاشی سبز جورند اما هر دو از دو طرف گرفته‌اند، و کاشی‌های آزادِ دو سر با هم جور نیستند.',
-    },
   };
-  const LANG_KEY = 'kitchen-table-mahjong-lang';
-  let lang = 'en';
-  try { lang = STR[localStorage.getItem(LANG_KEY)] ? localStorage.getItem(LANG_KEY) : 'en'; } catch (e) { }
+  const lang = 'en';
   const t = (k, vars = {}) => (STR[lang][k] || STR.en[k] || k).replace(/\{(\w+)\}/g, (m, v) => vars[v] ?? m);
   function applyLang() {
     document.documentElement.lang = lang;
@@ -452,8 +426,6 @@
     document.querySelectorAll('header, aside.panel, .dialog').forEach(el => el.dir = dir);
     document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
     document.querySelectorAll('button.choice[data-id]').forEach(b => { b.querySelector('.nm').textContent = t(b.dataset.id); b.querySelector('.lv').textContent = t(LAYOUTS[b.dataset.id].level); b.querySelector('.bt').textContent = recordText(b.dataset.id); });
-    $('#langBtn').textContent = t('other');
-    try { localStorage.setItem(LANG_KEY, lang); } catch (e) { }
   }
   const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
@@ -971,7 +943,6 @@
   new ResizeObserver(fit).observe(wrap);
   window.addEventListener('orientationchange', () => setTimeout(fit, 120));
 
-  $('#langBtn').addEventListener('click', () => { lang = lang === 'fa' ? 'en' : 'fa'; applyLang(); resetStuck(); if (S) paintPanel(); });
   applyLang();
 
   // ---------- boot ----------
