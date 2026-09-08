@@ -41,7 +41,8 @@
     --font-cjk: 'Ma Shan Zheng', 'PingFang TC', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK TC', serif;
   }
   :root[lang="fa"] { --font-ui: 'Vazirmatn', 'Geeza Pro', 'Noto Naskh Arabic', 'Helvetica Neue', sans-serif; }
-  :root[lang="fa"] .stat span, :root[lang="fa"] .layouts .label { text-transform: none; letter-spacing: 0; font-size: 14px; }
+  :root[lang="fa"] .stat span, :root[lang="fa"] .layouts .label, :root[lang="fa"] button.choice .lv { text-transform: none; letter-spacing: 0; font-size: 14px; }
+  :root[lang="fa"] button.choice .lv { font-size: 13px; }
   button.lang {
     font-family: var(--font-ui); font-size: 15px; font-weight: 700; color: var(--panel-ink);
     background: rgba(243, 238, 223, 0.1); border: 2px solid rgba(243, 238, 223, 0.3); border-radius: 999px;
@@ -203,7 +204,10 @@
   button.tool:focus-visible, button.big:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
   .layouts { display: grid; gap: 8px; }
   .layouts .label { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--panel-dim); text-align: center; }
-  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .choices { display: grid; grid-template-columns: 1fr; gap: 6px; }
+  button.choice .nm { flex: 1; text-align: start; }
+  button.choice .lv { font-size: 12px; font-weight: 400; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.75; }
+  button.choice[data-id] { display: flex; align-items: center; gap: 10px; padding: 0 14px; min-height: 40px; }
   button.choice {
     font-family: var(--font-ui); font-size: 16px; font-weight: 700; min-height: 46px;
     border-radius: 12px; border: 2px solid rgba(243, 238, 223, 0.25); background: rgba(243, 238, 223, 0.08); color: var(--panel-ink);
@@ -214,11 +218,11 @@
   button.choice.help { min-height: 50px; font-size: 17px; }
   .dialog.wide { width: min(94vw, 620px); text-align: start; max-height: 92dvh; overflow-y: auto; }
   .dialog.wide h2 { text-align: center; }
-  .dialog ol { margin: 0; padding-inline-start: 22px; display: grid; gap: 10px; font-size: 17px; line-height: 1.45; color: #2e3338; }
-  .dialog ol b { color: var(--tile-ink); }
-  .demo { position: relative; height: calc(var(--tw) * 2.1); margin: 6px auto 0; width: calc(var(--tw) * 4.4); --tw: 58px; }
+  .dialog ol { margin: 0; padding-inline-start: 22px; display: grid; gap: 18px; font-size: 17px; line-height: 1.45; color: #2e3338; }
+  .dialog ol p { margin: 0; }
+  .demo { position: relative; margin: 10px auto 0; --tw: 52px; }
   .demo .tile { cursor: default; }
-  .demo-cap { font-size: 15px; color: #4a4f55; text-align: center; margin: 0; line-height: 1.4; }
+  .demo-cap { font-size: 14px; color: #5a6066; text-align: center; margin: 4px 0 0; line-height: 1.4; }
   .panel .note { font-size: 14px; color: var(--panel-dim); text-align: center; line-height: 1.4; margin: 0; }
 
   /* dialogs */
@@ -270,24 +274,10 @@
     .stats { grid-column: 1; }
     .tools { grid-column: 2; grid-template-columns: 1fr 1fr 1fr; }
     button.big { grid-column: auto; min-height: 60px; font-size: 18px; }
-    .layouts { display: grid; gap: 8px; }
-  .layouts .label { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--panel-dim); text-align: center; }
-  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  button.choice {
-    font-family: var(--font-ui); font-size: 16px; font-weight: 700; min-height: 46px;
-    border-radius: 12px; border: 2px solid rgba(243, 238, 223, 0.25); background: rgba(243, 238, 223, 0.08); color: var(--panel-ink);
-    cursor: pointer; touch-action: manipulation;
-  }
-  button.choice[aria-checked="true"] { background: var(--gold); border-color: var(--gold); color: #2a2410; }
-  button.choice:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
-  button.choice.help { min-height: 50px; font-size: 17px; }
-  .dialog.wide { width: min(94vw, 620px); text-align: start; max-height: 92dvh; overflow-y: auto; }
-  .dialog.wide h2 { text-align: center; }
-  .dialog ol { margin: 0; padding-inline-start: 22px; display: grid; gap: 10px; font-size: 17px; line-height: 1.45; color: #2e3338; }
-  .dialog ol b { color: var(--tile-ink); }
-  .demo { position: relative; height: calc(var(--tw) * 2.1); margin: 6px auto 0; width: calc(var(--tw) * 4.4); --tw: 58px; }
-  .demo .tile { cursor: default; }
-  .demo-cap { font-size: 15px; color: #4a4f55; text-align: center; margin: 0; line-height: 1.4; }
+    .layouts { grid-column: 1 / -1; }
+    .choices { grid-template-columns: repeat(4, 1fr); }
+    button.choice[data-id] { flex-direction: column; gap: 2px; padding: 6px 8px; }
+    button.choice .nm { text-align: center; }
   .panel .note { grid-column: 1 / -1; }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -339,14 +329,11 @@
   <div class="dialog wide">
     <h2 id="helpTitle" data-i18n="help">How to play</h2>
     <ol>
-      <li data-i18n="r1"></li>
-      <li data-i18n="r2"></li>
-      <li data-i18n="r3"></li>
-      <li data-i18n="r4"></li>
-      <li data-i18n="r5"></li>
+      <li><p data-i18n="r1"></p><div class="demo" data-demo="match" aria-hidden="true"></div><p class="demo-cap" data-i18n="c1"></p></li>
+      <li><p data-i18n="r2"></p><div class="demo" data-demo="free" aria-hidden="true"></div><p class="demo-cap" data-i18n="c2"></p></li>
+      <li><p data-i18n="r3"></p><div class="demo" data-demo="tap" aria-hidden="true"></div><p class="demo-cap" data-i18n="c3"></p></li>
+      <li><p data-i18n="r4"></p><div class="demo" data-demo="stuck" aria-hidden="true"></div><p class="demo-cap" data-i18n="c4"></p></li>
     </ol>
-    <div class="demo" id="helpDemo" aria-hidden="true"></div>
-    <p class="demo-cap" data-i18n="demoCap"></p>
     <div class="row" style="grid-template-columns: 1fr">
       <button class="primary" id="helpClose" data-i18n="gotIt">Got it</button>
     </div>
@@ -386,25 +373,27 @@
       title: 'Kitchen Table Mahjong', status: 'Match two free tiles to clear them', statusSel: 'Now tap the other {name}',
       blocked: 'That tile is blocked. Its top or both sides are covered.', cleared: 'Table cleared',
       tilesLeft: 'Tiles left', time: 'Time', undo: 'Undo', shuffle: 'Shuffle', newGame: 'New game', layout: 'Layout',
-      turtle: 'Turtle', pyramid: 'Pyramid', fortress: 'Fortress', cross: 'Cross',
+      turtle: 'Turtle', pyramid: 'Pyramid', fortress: 'Fortress', cross: 'Cross', fish: 'Fish', spider: 'Spider', stacks: 'Eight Stacks', easy: 'easy', medium: 'medium', hard: 'hard',
       note: 'A tile is free when nothing sits on top of it and one side is open. Any two flowers match, and any two suns match.',
       stuckTitle: 'No free pairs', stuckText: 'Matching tiles are still on the table, but every pair is blocked on both sides or covered. Shuffle the tiles that are left, or go back a move.',
       noShuffle: 'The tiles left on the table can\'t be arranged into a winnable game (one is sitting on the other). Undo a few moves or deal a new game.',
       confirmTitle: 'Start a new game?', confirmText: 'This table will be cleared and a fresh one dealt.', keep: 'Keep playing',
       solvedTitle: 'Table cleared!', solvedText: 'All {n} tiles matched in {t}.', look: 'Look at it', dealAgain: 'Deal again', other: 'فارسی',
       help: 'How to play', gotIt: 'Got it',
-      r1: 'Clear the table by removing tiles two at a time. Two tiles can go together when they look the same. Any two flowers go together, and any two suns go together.',
-      r2: 'Only free tiles can be taken. A tile is free when nothing sits on top of it and its left or right side is open. A tile with neighbours on both sides is stuck, even if its twin is right beside it.',
-      r3: 'Bright tiles are free. Grey tiles are blocked for now. Removing tiles frees the ones they were covering or touching.',
-      r4: 'Tap a free tile, then tap its match. Tap the same tile again to put it back down. A blocked tile shakes if you tap it.',
-      r5: 'Every deal can be won, but the order matters. If every remaining pair is blocked, use Undo to go back or Shuffle to rearrange what is left.',
-      demoCap: 'The two 3-circles on the ends can be taken. The bamboo in the middle is covered and wedged in, and the red tile on top is free.',
+      r1: 'Clear the table by removing tiles two at a time. Two tiles go together when they look the same. Any two flowers go together, and any two suns go together.',
+      c1: 'A pair of 5-circles, and a pair of flowers with different names.',
+      r2: 'Only free tiles can be taken. A tile is free when nothing sits on top of it and its left or right side is open. Bright tiles are free, grey tiles are blocked for now.',
+      c2: 'The two end tiles can be taken. The middle one is covered and wedged in. The tile on top is free.',
+      r3: 'Tap a free tile to pick it up, then tap its match. Tap the same tile again to put it back down. A blocked tile shakes if you tap it.',
+      c3: 'The gold tile has been picked up. Tapping the matching 3 on the right clears both.',
+      r4: 'Every deal can be won, but the order matters. Sometimes the matching tiles are all wedged in. Then use Undo to go back or Shuffle to rearrange what is left.',
+      c4: 'Stuck: the two green tiles match but both are held on both sides, and the free end tiles don\'t match each other.',
     },
     fa: {
       title: 'ماهجونگ', status: 'دو کاشی آزادِ یکسان را بزنید تا برداشته شوند', statusSel: 'حالا کاشی مشابه را بزنید',
       blocked: 'این کاشی آزاد نیست؛ رویش یا دو طرفش پوشیده است.', cleared: 'میز پاک شد',
       tilesLeft: 'کاشی‌های مانده', time: 'زمان', undo: 'برگشت', shuffle: 'بُر زدن', newGame: 'بازی جدید', layout: 'چیدمان',
-      turtle: 'لاک‌پشت', pyramid: 'هرم', fortress: 'قلعه', cross: 'صلیب',
+      turtle: 'لاک‌پشت', pyramid: 'هرم', fortress: 'قلعه', cross: 'صلیب', fish: 'ماهی', spider: 'عنکبوت', stacks: 'هشت دسته', easy: 'آسان', medium: 'متوسط', hard: 'سخت',
       note: 'کاشی وقتی آزاد است که چیزی رویش نباشد و یک طرفش باز باشد. هر دو گل با هم جورند و هر دو خورشید هم همین‌طور.',
       stuckTitle: 'جفت آزادی نمانده', stuckText: 'کاشی‌های جور هنوز روی میز هستند، اما همه‌شان از دو طرف گیر کرده‌اند یا زیر کاشی دیگری‌اند. کاشی‌های مانده را بُر بزنید یا یک حرکت برگردید.',
       noShuffle: 'کاشی‌های مانده را نمی‌شود طوری چید که بازی قابل برد باشد (یکی روی دیگری است). چند حرکت برگردید یا بازی جدیدی شروع کنید.',
@@ -412,11 +401,13 @@
       solvedTitle: 'میز پاک شد!', solvedText: 'همه {n} کاشی در {t} جور شدند.', look: 'نگاه کنم', dealAgain: 'دوباره بچین', other: 'English',
       help: 'راهنمای بازی', gotIt: 'فهمیدم',
       r1: 'میز را با برداشتن کاشی‌ها دوتا‌دوتا خالی کنید. دو کاشی وقتی با هم می‌روند که شبیه هم باشند. هر دو گل با هم می‌روند و هر دو خورشید هم همین‌طور.',
-      r2: 'فقط کاشی‌های آزاد را می‌شود برداشت. کاشی وقتی آزاد است که چیزی رویش نباشد و سمت چپ یا راستش باز باشد. کاشی‌ای که از دو طرف همسایه دارد گیر است، حتی اگر جفتش درست کنارش باشد.',
-      r3: 'کاشی‌های روشن آزادند. کاشی‌های خاکستری فعلاً گیرند. با برداشتن کاشی‌ها، آن‌هایی که زیرشان یا کنارشان بودند آزاد می‌شوند.',
-      r4: 'یک کاشی آزاد را بزنید، بعد جفتش را. اگر همان کاشی را دوباره بزنید، سر جایش برمی‌گردد. کاشی گیر با زدن تکان می‌خورد.',
-      r5: 'هر چیدمانی قابل برد است، اما ترتیب مهم است. اگر همه جفت‌های مانده گیر بودند، با «برگشت» عقب بروید یا با «بُر زدن» کاشی‌های مانده را دوباره بچینید.',
-      demoCap: 'دو کاشی سه‌دایره در دو سر ردیف را می‌شود برداشت. بامبوی وسط زیر کاشی دیگر و بین دو همسایه گیر است، و کاشی قرمز بالا آزاد است.',
+      c1: 'یک جفت پنج‌دایره، و یک جفت گل با نام‌های متفاوت.',
+      r2: 'فقط کاشی‌های آزاد را می‌شود برداشت. کاشی وقتی آزاد است که چیزی رویش نباشد و سمت چپ یا راستش باز باشد. کاشی‌های روشن آزادند و خاکستری‌ها فعلاً گیرند.',
+      c2: 'دو کاشی دو سر ردیف را می‌شود برداشت. کاشی وسط زیر کاشی دیگر و بین دو همسایه گیر است. کاشی بالا آزاد است.',
+      r3: 'یک کاشی آزاد را بزنید تا برداشته شود، بعد جفتش را بزنید. اگر همان کاشی را دوباره بزنید، سر جایش برمی‌گردد. کاشی گیر با زدن تکان می‌خورد.',
+      c3: 'کاشی طلایی برداشته شده. با زدن ۳ی سمت راست هر دو پاک می‌شوند.',
+      r4: 'هر چیدمانی قابل برد است، اما ترتیب مهم است. گاهی همه کاشی‌های جور گیر می‌افتند. آن‌وقت با «برگشت» عقب بروید یا با «بُر زدن» کاشی‌های مانده را دوباره بچینید.',
+      c4: 'گیر: دو کاشی سبز جورند اما هر دو از دو طرف گرفته‌اند، و کاشی‌های آزادِ دو سر با هم جور نیستند.',
     },
   };
   const LANG_KEY = 'kitchen-table-mahjong-lang';
@@ -428,7 +419,7 @@
     const dir = lang === 'fa' ? 'rtl' : 'ltr';
     document.querySelectorAll('header, aside.panel, .dialog').forEach(el => el.dir = dir);
     document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
-    document.querySelectorAll('button.choice[data-id]').forEach(b => { b.textContent = t(b.dataset.id); });
+    document.querySelectorAll('button.choice[data-id]').forEach(b => { b.querySelector('.nm').textContent = t(b.dataset.id); b.querySelector('.lv').textContent = t(LAYOUTS[b.dataset.id].level); });
     $('#langBtn').textContent = t('other');
     try { localStorage.setItem(LANG_KEY, lang); } catch (e) { }
   }
@@ -436,28 +427,11 @@
 
   // ---------- layouts, coordinates in half-tile units (x2, y2) and layer z ----------
   function rows(P, z, y0, y1, x0, x1) { for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) P.push({ x2: x * 2, y2: y * 2, z }); }
+  const at = (P, x, y, z) => P.push({ x2: Math.round(x * 2), y2: Math.round(y * 2), z });
+  const stack = (P, x, y, layers, z0 = 0) => { for (let z = z0; z < z0 + layers; z++) at(P, x, y, z); };
+  // ordered easiest to hardest, ranked by how often random play clears the table without getting stuck
   const LAYOUTS = {
-    turtle: { name: 'Turtle', build() {
-      const P = [];
-      rows(P, 0, 0, 0, 1, 12); rows(P, 0, 1, 1, 3, 10); rows(P, 0, 2, 2, 2, 11); rows(P, 0, 3, 4, 1, 12); rows(P, 0, 5, 5, 2, 11); rows(P, 0, 6, 6, 3, 10); rows(P, 0, 7, 7, 1, 12);
-      P.push({ x2: 0, y2: 7, z: 0 }, { x2: 26, y2: 7, z: 0 }, { x2: 28, y2: 7, z: 0 });
-      rows(P, 1, 1, 6, 4, 9); rows(P, 2, 2, 5, 5, 8); rows(P, 3, 3, 4, 6, 7);
-      P.push({ x2: 13, y2: 7, z: 4 });
-      return P;
-    } },
-    pyramid: { name: 'Pyramid', build() {
-      // a diamond footprint, each layer a smaller diamond, six tiles high at the peak
-      const P = [];
-      const diamond = (z, y0, widths) => widths.forEach((w, k) => { for (let x2 = 14 - w; x2 <= 14 + w - 2; x2 += 2) P.push({ x2, y2: (y0 + k) * 2, z }); });
-      diamond(0, 0, [2, 5, 8, 11, 14, 11, 8, 5, 2]);
-      diamond(1, 1, [2, 5, 8, 11, 8, 5, 2]);
-      diamond(2, 2, [2, 5, 8, 5, 2]);
-      diamond(3, 3, [2, 5, 2]);
-      for (const y2 of [7, 9]) for (const x2 of [12, 14]) P.push({ x2, y2, z: 4 });
-      for (const x2 of [12, 14]) P.push({ x2, y2: 8, z: 5 });
-      return P;
-    } },
-    fortress: { name: 'Fortress', build() {
+    fortress: { name: 'Fortress', level: 'easy', build() {
       // four stepped towers in the corners and a cross rising in the middle
       const P = [];
       for (const [x0, y0] of [[0, 0], [12, 0], [0, 7], [12, 7]]) {
@@ -471,11 +445,78 @@
       rows(P, 3, 4, 5, 7, 8);
       return P;
     } },
-    cross: { name: 'Cross', build() {
+    turtle: { name: 'Turtle', level: 'easy', build() {
+      const P = [];
+      rows(P, 0, 0, 0, 1, 12); rows(P, 0, 1, 1, 3, 10); rows(P, 0, 2, 2, 2, 11); rows(P, 0, 3, 4, 1, 12); rows(P, 0, 5, 5, 2, 11); rows(P, 0, 6, 6, 3, 10); rows(P, 0, 7, 7, 1, 12);
+      P.push({ x2: 0, y2: 7, z: 0 }, { x2: 26, y2: 7, z: 0 }, { x2: 28, y2: 7, z: 0 });
+      rows(P, 1, 1, 6, 4, 9); rows(P, 2, 2, 5, 5, 8); rows(P, 3, 3, 4, 6, 7);
+      P.push({ x2: 13, y2: 7, z: 4 });
+      return P;
+    } },
+    fish: { name: 'Fish', level: 'medium', build() {
+      // a layered oval body facing right, a forked tail on the left, fins above and below, an eye and a mouth
+      const P = [];
+      rows(P, 0, 2, 2, 8, 12); rows(P, 0, 3, 3, 6, 14); rows(P, 0, 4, 5, 5, 15); rows(P, 0, 6, 6, 6, 14); rows(P, 0, 7, 7, 8, 12);
+      rows(P, 1, 3, 3, 7, 13); rows(P, 1, 4, 5, 7, 13); rows(P, 1, 6, 6, 7, 13);
+      for (const y of [3.5, 4.5, 5.5]) for (const x of [9, 10, 11, 12]) at(P, x, y, 2);
+      at(P, 10, 4.5, 3); at(P, 11, 4.5, 3);
+      // tail: two arms fanning out to the left, four tiles tall
+      [[4, 3], [3, 2], [2, 1], [1, 0]].forEach(([x, y]) => stack(P, x, y, 4));
+      [[4, 6], [3, 7], [2, 8], [1, 9]].forEach(([x, y]) => stack(P, x, y, 4));
+      // fins
+      [[8, 1], [9, 0.5], [10, 0]].forEach(([x, y], i) => stack(P, x, y, i === 0 ? 4 : 2));
+      [[8, 8], [9, 8.5], [10, 9]].forEach(([x, y], i) => stack(P, x, y, i === 0 ? 3 : 2));
+      // eye on the head, mouth at the front
+      at(P, 14, 3.5, 1); at(P, 14, 3.5, 2);
+      stack(P, 16, 4.5, 3);
+      return P;
+    } },
+    cross: { name: 'Cross', level: 'medium', build() {
       const P = [];
       rows(P, 0, 2, 5, 0, 14); rows(P, 0, 0, 1, 4, 10); rows(P, 0, 6, 7, 4, 10);
       rows(P, 1, 3, 4, 2, 12); rows(P, 1, 1, 2, 5, 9); rows(P, 1, 5, 6, 5, 9);
       rows(P, 2, 3, 4, 4, 10);
+      return P;
+    } },
+    spider: { name: 'Spider', level: 'medium', build() {
+      // stacked body with eight stepped legs, each leg a chain of small stacks
+      const P = [];
+      rows(P, 0, 2, 7, 3, 10); rows(P, 1, 3, 6, 4, 9); rows(P, 2, 4, 5, 5, 8); at(P, 6, 4.5, 3); at(P, 7, 4.5, 3);
+      const leg = (pts, layers) => pts.forEach(([x, y], i) => stack(P, x, y, layers[i]));
+      // side legs: inner stack 3 high, then 2, then 2
+      leg([[2, 1.5], [1, 1], [0, 0.5]], [3, 2, 2]);
+      leg([[2, 4.5], [1, 4.5], [0, 4.5]], [3, 2, 2]);
+      leg([[2, 7.5], [1, 8], [0, 8.5]], [3, 2, 2]);
+      leg([[11, 1.5], [12, 1], [13, 0.5]], [3, 2, 2]);
+      leg([[11, 4.5], [12, 4.5], [13, 4.5]], [3, 2, 2]);
+      leg([[11, 7.5], [12, 8], [13, 8.5]], [3, 2, 2]);
+      // top and bottom legs
+      leg([[5, 1], [5, 0]], [3, 2]); leg([[8, 1], [8, 0]], [3, 2]);
+      leg([[5, 8], [5, 9]], [3, 2]); leg([[8, 8], [8, 9]], [3, 2]);
+      return P;
+    } },
+    stacks: { name: 'Eight Stacks', level: 'hard', build() {
+      // eight 2x2 stacks four deep with a cap tile, and a loose tile above and below each column
+      const P = [];
+      for (const x0 of [0, 3, 6, 9]) {
+        for (const y0 of [1.5, 4.5]) {
+          for (let z = 0; z < 4; z++) { at(P, x0, y0, z); at(P, x0 + 1, y0, z); at(P, x0, y0 + 1, z); at(P, x0 + 1, y0 + 1, z); }
+          at(P, x0 + 0.5, y0 + 0.5, 4);
+        }
+        at(P, x0 + 0.5, 0, 0); at(P, x0 + 0.5, 7, 0);
+      }
+      return P;
+    } },
+    pyramid: { name: 'Pyramid', level: 'hard', build() {
+      // a diamond footprint, each layer a smaller diamond, six tiles high at the peak
+      const P = [];
+      const diamond = (z, y0, widths) => widths.forEach((w, k) => { for (let x2 = 14 - w; x2 <= 14 + w - 2; x2 += 2) P.push({ x2, y2: (y0 + k) * 2, z }); });
+      diamond(0, 0, [2, 5, 8, 11, 14, 11, 8, 5, 2]);
+      diamond(1, 1, [2, 5, 8, 11, 8, 5, 2]);
+      diamond(2, 2, [2, 5, 8, 5, 2]);
+      diamond(3, 3, [2, 5, 2]);
+      for (const y2 of [7, 9]) for (const x2 of [12, 14]) P.push({ x2, y2, z: 4 });
+      for (const x2 of [12, 14]) P.push({ x2, y2: 8, z: 5 });
       return P;
     } },
   };
@@ -487,6 +528,7 @@
   function useLayout(id) {
     layoutId = LAYOUTS[id] ? id : 'turtle';
     POS = LAYOUTS[layoutId].build(); N = POS.length;
+    { const mx = Math.min(...POS.map(p => p.x2)), my = Math.min(...POS.map(p => p.y2)); POS.forEach(p => { p.x2 -= mx; p.y2 -= my; }); }
     const idx = POS.map((p, i) => i);
     ABOVE = POS.map(p => idx.filter(j => POS[j].z === p.z + 1 && Math.abs(POS[j].x2 - p.x2) < 2 && overlapY(p, POS[j])));
     LEFT = POS.map((p, i) => idx.filter(j => j !== i && POS[j].z === p.z && overlapY(p, POS[j]) && POS[j].x2 < p.x2 && POS[j].x2 > p.x2 - 4));
@@ -643,7 +685,7 @@
   const choices = $('#layoutChoices');
   for (const [id, L] of Object.entries(LAYOUTS)) {
     const b = document.createElement('button');
-    b.className = 'choice'; b.type = 'button'; b.dataset.id = id; b.setAttribute('role', 'radio'); b.textContent = t(id);
+    b.className = 'choice'; b.type = 'button'; b.dataset.id = id; b.setAttribute('role', 'radio'); b.innerHTML = `<span class="nm">${t(id)}</span><span class="lv">${t(L.level)}</span>`;
     b.addEventListener('click', () => {
       if (id === layoutId) return;
       if (started()) { pendingLayout = id; show('#confirmDialog'); }
@@ -754,17 +796,28 @@
   const started = () => S && S.history.length > 0 && !S.solved;
   el.newBtn.addEventListener('click', () => started() ? show('#confirmDialog') : newGame());
   $('#confirmKeep').addEventListener('click', () => { pendingLayout = null; hideDialogs(); });
-  (function buildDemo() {
-    const demo = $('#helpDemo');
-    const spec = [['dot3', 0, 0.55, 0, false], ['bam5', 1, 0.55, 0, true], ['dot3', 2, 0.55, 0, false], ['dragR', 1, 0.55, 1, false]];
-    for (const [kind, x, y, z, blocked] of spec) {
-      const b = document.createElement('div');
-      b.className = 'tile' + (blocked ? ' blocked' : '');
-      b.style.left = `calc(var(--tw) * ${(x * 1.06 + (1 - z) * 0.16 + 0.2).toFixed(3)})`;
-      b.style.top = `calc(var(--tw) * ${(y + (1 - z) * 0.16).toFixed(3)})`;
-      b.style.zIndex = z * 10 + x; b.style.setProperty('--z', z);
-      b.innerHTML = FACE[kind];
-      demo.appendChild(b);
+  (function buildDemos() {
+    // [kind, x, y, z, blocked, selected]
+    const DEMOS = {
+      match: [['dot5', 0, 0, 0], ['dot5', 1, 0, 0], ['flower1', 2.6, 0, 0], ['flower3', 3.6, 0, 0]],
+      free: [['dot3', 0, 0.45, 0], ['bam5', 1, 0.45, 0, true], ['dot3', 2, 0.45, 0], ['dragR', 1, 0.45, 1]],
+      tap: [['crak3', 0, 0, 0, false, true], ['bam2', 1, 0, 0, true], ['crak3', 2, 0, 0]],
+      stuck: [['dot8', 0, 0, 0], ['dragG', 1, 0, 0, true], ['dragG', 2, 0, 0, true], ['crak3', 3, 0, 0]],
+    };
+    for (const demo of document.querySelectorAll('.demo[data-demo]')) {
+      const spec = DEMOS[demo.dataset.demo];
+      const maxX = Math.max(...spec.map(t => t[1])), maxY = Math.max(...spec.map(t => t[2])), maxZ = Math.max(...spec.map(t => t[3]));
+      demo.style.width = `calc(var(--tw) * ${(maxX + 1.3 + maxZ * 0.11).toFixed(2)})`;
+      demo.style.height = `calc(var(--tw) * ${((maxY + 1) * 1.3333 + 0.35).toFixed(2)})`;
+      for (const [kind, x, y, z, blocked, selected] of spec) {
+        const b = document.createElement('div');
+        b.className = 'tile' + (blocked ? ' blocked' : '') + (selected ? ' selected' : '');
+        b.style.left = `calc(var(--tw) * ${(x * 1.03 + (maxZ - z) * 0.11 + 0.05).toFixed(3)})`;
+        b.style.top = `calc(var(--tw) * ${(y * 1.3333 + (maxZ - z) * 0.11 + 0.05).toFixed(3)})`;
+        b.style.zIndex = z * 10 + x * 2; b.style.setProperty('--z', z);
+        b.innerHTML = FACE[kind];
+        demo.appendChild(b);
+      }
     }
   })();
   $('#helpBtn').addEventListener('click', () => show('#helpDialog'));
