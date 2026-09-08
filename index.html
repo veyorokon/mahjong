@@ -145,8 +145,8 @@
   }
   /* blocked tiles sink into shade so the stacking reads at a glance; free tiles stay bright */
   .tile.blocked {
-    filter: brightness(0.84) saturate(0.7) drop-shadow(calc(var(--side) * 1.2 + var(--z) * var(--tw) * 0.03) calc(var(--side) * 1.8 + var(--z) * var(--tw) * 0.05) calc(var(--tw) * 0.1 + var(--z) * var(--tw) * 0.05) rgba(0, 0, 0, 0.32));
-    background: linear-gradient(160deg, #e6e3d5, #d8d6c6 55%, #cdcbbc);
+    filter: brightness(0.72) saturate(0.5) drop-shadow(calc(var(--side) * 1.2 + var(--z) * var(--tw) * 0.03) calc(var(--side) * 1.8 + var(--z) * var(--tw) * 0.05) calc(var(--tw) * 0.1 + var(--z) * var(--tw) * 0.05) rgba(0, 0, 0, 0.3));
+    background: linear-gradient(160deg, #d9d8cc, #cbcabc 55%, #bdbcae);
   }
   #board::before {
     content: ""; position: absolute; inset: 6% 2% -4% 2%; border-radius: 50%;
