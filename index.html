@@ -309,8 +309,8 @@
 
 <div class="veil" id="stuckDialog" hidden role="dialog" aria-modal="true" aria-labelledby="stuckTitle">
   <div class="dialog">
-    <h2 id="stuckTitle" data-i18n="stuckTitle">No moves left</h2>
-    <p id="stuckText">None of the free tiles match each other right now. Shuffle the tiles that are still on the table, or go back a move.</p>
+    <h2 id="stuckTitle" data-i18n="stuckTitle">No free pairs</h2>
+    <p id="stuckText">Matching tiles are still on the table, but every pair is blocked on both sides or covered. Shuffle the tiles that are left, or go back a move.</p>
     <div class="row three">
       <button id="stuckUndo" data-i18n="undo">Undo</button>
       <button id="stuckNew" data-i18n="newGame">New game</button>
@@ -354,7 +354,7 @@
       tilesLeft: 'Tiles left', time: 'Time', undo: 'Undo', shuffle: 'Shuffle', newGame: 'New game', layout: 'Layout',
       turtle: 'Turtle', pyramid: 'Pyramid', fortress: 'Fortress', cross: 'Cross',
       note: 'A tile is free when nothing sits on top of it and one side is open. Any two flowers match, and any two suns match.',
-      stuckTitle: 'No moves left', stuckText: 'None of the free tiles match each other right now. Shuffle the tiles that are still on the table, or go back a move.',
+      stuckTitle: 'No free pairs', stuckText: 'Matching tiles are still on the table, but every pair is blocked on both sides or covered. Shuffle the tiles that are left, or go back a move.',
       noShuffle: 'The tiles left on the table can\'t be arranged into a winnable game (one is sitting on the other). Undo a few moves or deal a new game.',
       confirmTitle: 'Start a new game?', confirmText: 'This table will be cleared and a fresh one dealt.', keep: 'Keep playing',
       solvedTitle: 'Table cleared!', solvedText: 'All {n} tiles matched in {t}.', look: 'Look at it', dealAgain: 'Deal again', other: 'فارسی',
@@ -365,7 +365,7 @@
       tilesLeft: 'کاشی‌های مانده', time: 'زمان', undo: 'برگشت', shuffle: 'بُر زدن', newGame: 'بازی جدید', layout: 'چیدمان',
       turtle: 'لاک‌پشت', pyramid: 'هرم', fortress: 'قلعه', cross: 'صلیب',
       note: 'کاشی وقتی آزاد است که چیزی رویش نباشد و یک طرفش باز باشد. هر دو گل با هم جورند و هر دو خورشید هم همین‌طور.',
-      stuckTitle: 'حرکتی نمانده', stuckText: 'هیچ‌کدام از کاشی‌های آزاد با هم جور نیستند. کاشی‌های روی میز را بُر بزنید یا یک حرکت برگردید.',
+      stuckTitle: 'جفت آزادی نمانده', stuckText: 'کاشی‌های جور هنوز روی میز هستند، اما همه‌شان از دو طرف گیر کرده‌اند یا زیر کاشی دیگری‌اند. کاشی‌های مانده را بُر بزنید یا یک حرکت برگردید.',
       noShuffle: 'کاشی‌های مانده را نمی‌شود طوری چید که بازی قابل برد باشد (یکی روی دیگری است). چند حرکت برگردید یا بازی جدیدی شروع کنید.',
       confirmTitle: 'بازی جدید شروع شود؟', confirmText: 'این میز پاک می‌شود و میز تازه‌ای چیده می‌شود.', keep: 'ادامه بازی',
       solvedTitle: 'میز پاک شد!', solvedText: 'همه {n} کاشی در {t} جور شدند.', look: 'نگاه کنم', dealAgain: 'دوباره بچین', other: 'English',
