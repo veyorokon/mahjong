@@ -189,7 +189,7 @@
   .stat span { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--panel-dim); }
   .stat b { font-size: 28px; font-variant-numeric: tabular-nums; }
   .stat b small { font-size: 15px; font-weight: 400; color: var(--panel-dim); }
-  .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .tools { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
   button.tool, button.big {
     font-family: var(--font-ui); font-size: 18px; font-weight: 700;
     color: var(--btn-ink); background: linear-gradient(160deg, var(--tile-hi), var(--btn));
@@ -263,8 +263,8 @@
     aside.panel { align-self: center; gap: 18px; padding: 20px 18px; }
     .stats { gap: 14px; }
     .stat b { font-size: 34px; }
-    .tools { grid-template-columns: 1fr 1fr; }
-    button.tool { min-height: 66px; font-size: 19px; }
+    .tools { grid-template-columns: 1fr 1fr 1fr; }
+    button.tool { min-height: 66px; font-size: 18px; padding: 0 6px; }
     button.big { min-height: 74px; font-size: 21px; }
   }
   @media (max-width: 699px), (orientation: portrait) {
@@ -272,7 +272,7 @@
     .stats { grid-template-columns: 1fr 1fr; }
     aside.panel { grid-template-columns: 1fr 1fr; align-items: center; }
     .stats { grid-column: 1; }
-    .tools { grid-column: 2; grid-template-columns: 1fr 1fr 1fr; }
+    .tools { grid-column: 2; grid-template-columns: 1fr 1fr 1fr 1fr; }
     button.big { grid-column: auto; min-height: 60px; font-size: 18px; }
     .layouts { grid-column: 1 / -1; }
     .choices { grid-template-columns: repeat(4, 1fr); }
@@ -301,6 +301,7 @@
       </div>
       <div class="tools">
         <button class="tool" id="undoBtn" disabled data-i18n="undo">Undo</button>
+        <button class="tool" id="hintBtn" data-i18n="hint">Hint</button>
         <button class="tool" id="shuffleBtn" data-i18n="shuffle">Shuffle</button>
         <button class="big" id="newBtn" data-i18n="newGame">New game</button>
       </div>
@@ -372,7 +373,7 @@
     en: {
       title: 'Kitchen Table Mahjong', status: 'Match two free tiles to clear them', statusSel: 'Now tap the other {name}',
       blocked: 'That tile is blocked. Its top or both sides are covered.', cleared: 'Table cleared',
-      tilesLeft: 'Tiles left', time: 'Time', undo: 'Undo', shuffle: 'Shuffle', newGame: 'New game', layout: 'Layout',
+      tilesLeft: 'Tiles left', time: 'Time', undo: 'Undo', hint: 'Hint', shuffle: 'Shuffle', newGame: 'New game', layout: 'Layout', hintStatus: 'Hint: this one has a free match. Tap the other {name}.',
       turtle: 'Turtle', pyramid: 'Pyramid', fortress: 'Fortress', cross: 'Cross', fish: 'Fish', spider: 'Spider', stacks: 'Eight Stacks', easy: 'easy', medium: 'medium', hard: 'hard',
       note: 'A tile is free when nothing sits on top of it and one side is open. Any two flowers match, and any two suns match.',
       stuckTitle: 'No free pairs', stuckText: 'Matching tiles are still on the table, but every pair is blocked on both sides or covered. Shuffle the tiles that are left, or go back a move.',
@@ -392,7 +393,7 @@
     fa: {
       title: 'ماهجونگ', status: 'دو کاشی آزادِ یکسان را بزنید تا برداشته شوند', statusSel: 'حالا کاشی مشابه را بزنید',
       blocked: 'این کاشی آزاد نیست؛ رویش یا دو طرفش پوشیده است.', cleared: 'میز پاک شد',
-      tilesLeft: 'کاشی‌های مانده', time: 'زمان', undo: 'برگشت', shuffle: 'بُر زدن', newGame: 'بازی جدید', layout: 'چیدمان',
+      tilesLeft: 'کاشی‌های مانده', time: 'زمان', undo: 'برگشت', hint: 'راهنمایی', shuffle: 'بُر زدن', newGame: 'بازی جدید', layout: 'چیدمان', hintStatus: 'راهنمایی: این کاشی جفت آزاد دارد. حالا جفتش را بزنید.',
       turtle: 'لاک‌پشت', pyramid: 'هرم', fortress: 'قلعه', cross: 'صلیب', fish: 'ماهی', spider: 'عنکبوت', stacks: 'هشت دسته', easy: 'آسان', medium: 'متوسط', hard: 'سخت',
       note: 'کاشی وقتی آزاد است که چیزی رویش نباشد و یک طرفش باز باشد. هر دو گل با هم جورند و هر دو خورشید هم همین‌طور.',
       stuckTitle: 'جفت آزادی نمانده', stuckText: 'کاشی‌های جور هنوز روی میز هستند، اما همه‌شان از دو طرف گیر کرده‌اند یا زیر کاشی دیگری‌اند. کاشی‌های مانده را بُر بزنید یا یک حرکت برگردید.',
@@ -721,7 +722,7 @@
     el.left.textContent = left;
     el.timer.textContent = fmt(S.elapsed);
     el.undo.disabled = S.history.length === 0 || S.solved;
-    el.shuffleBtn.disabled = S.solved;
+    el.shuffleBtn.disabled = S.solved; $('#hintBtn').disabled = S.solved;
     el.status.textContent = S.solved ? t('cleared') : sel >= 0 ? t('statusSel', { name: NAME(S.kinds[sel]) }) : t('status');
   }
 
@@ -777,6 +778,22 @@
     if (sel >= 0) tiles[sel].classList.remove('selected');
     sel = -1; hideDialogs(); paintPanel(); save();
   }
+  // hint: pick up one tile of a free pair. prefers a pair whose whole group is free, since that can never hurt
+  function hint() {
+    if (!S || S.solved) return;
+    const pres = present();
+    if (!hasMoves()) { resetStuck(); show('#stuckDialog'); return; }
+    const free = []; for (let i = 0; i < N; i++) if (pres[i] && isFree(i, pres)) free.push(i);
+    const byG = {}; for (const i of free) (byG[groupOf(S.kinds[i])] ||= []).push(i);
+    const count = {}; for (let i = 0; i < N; i++) if (pres[i]) { const g = groupOf(S.kinds[i]); count[g] = (count[g] || 0) + 1; }
+    const groups = Object.entries(byG).filter(([g, a]) => a.length >= 2);
+    const safe = groups.filter(([g, a]) => count[g] === a.length);
+    const pick = (safe.length ? safe : groups)[(Math.random() * (safe.length ? safe : groups).length) | 0];
+    if (sel >= 0) tiles[sel].classList.remove('selected');
+    sel = pick[1][0]; tiles[sel].classList.add('selected');
+    paintPanel();
+    el.status.textContent = t('hintStatus', { name: NAME(S.kinds[sel]) });
+  }
   function hasMoves() {
     const pres = present(), seen = {};
     for (let i = 0; i < N; i++) if (pres[i] && isFree(i, pres)) { const g = groupOf(S.kinds[i]); if (seen[g]) return true; seen[g] = true; }
@@ -825,6 +842,7 @@
   $('#confirmNew').addEventListener('click', newGame);
   el.undo.addEventListener('click', undo);
   el.shuffleBtn.addEventListener('click', reshuffle);
+  $('#hintBtn').addEventListener('click', hint);
   $('#stuckUndo').addEventListener('click', undo);
   $('#stuckNew').addEventListener('click', newGame);
   $('#stuckShuffle').addEventListener('click', reshuffle);
