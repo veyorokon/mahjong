@@ -181,7 +181,6 @@
     45% { transform: translate(calc(var(--side) * -1.1), calc(var(--side) * -1.1)) scale(1.04); }
   }
   .tile.shake { animation: shake 320ms ease; }
-  .tile.blocked.shake { filter: brightness(0.75) saturate(0.5) drop-shadow(calc(var(--side) * 1.2) calc(var(--side) * 1.8) calc(var(--tw) * 0.1) rgba(0, 0, 0, 0.3)); }
   @keyframes shake {
     0%, 100% { transform: translateX(0); }
     20% { transform: translateX(-5px); } 40% { transform: translateX(5px); }
@@ -739,7 +738,7 @@
     sel = -1;
     paintPanel();
   }
-  board.addEventListener('animationend', e => { if (e.target.classList) e.target.classList.remove('deal', 'freed', 'back', 'hinted'); });
+  board.addEventListener('animationend', e => { if (e.target.classList) e.target.classList.remove('deal', 'freed', 'back', 'hinted', 'shake'); });
   function paintFree() {
     const pres = present();
     for (let i = 0; i < N; i++) if (pres[i]) tiles[i].classList.toggle('blocked', !isFree(i, pres));
