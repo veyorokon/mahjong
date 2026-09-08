@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Mahjong">
-<meta name="theme-color" content="#1b3358">
+<meta name="theme-color" content="#276a5e">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="manifest" href="manifest.json">
@@ -15,37 +15,30 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Vazirmatn:wght@400;700&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Noto+Nastaliq+Urdu:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&text=%E4%B8%80%E4%BA%8C%E4%B8%89%E5%9B%9B%E4%BA%94%E5%85%AD%E4%B8%83%E5%85%AB%E4%B9%9D%E8%90%AC%E6%9D%B1%E5%8D%97%E8%A5%BF%E5%8C%97%E4%B8%AD%E7%99%BC%E6%A2%85%E8%98%AD%E8%8F%8A%E7%AB%B9%E6%98%A5%E5%A4%8F%E7%A7%8B%E5%86%AC%E9%BA%BB%E9%9B%80%E5%92%8C&display=swap">
 <style>
   :root {
-    /* lapis table, ivory tiles, gold rule: the palette of an isfahan tilework panel */
-    --felt: #214173;
-    --felt-deep: #13264a;
-    --panel: rgba(9, 22, 48, 0.58);
-    --panel-line: rgba(217, 180, 92, 0.3);
-    --panel-ink: #f4ecd8;
-    --panel-dim: rgba(244, 236, 216, 0.66);
-    --tile: #f7f1e1;
-    --tile-hi: #fffcf1;
-    --tile-side: #dccb9c;
-    --tile-side-deep: #bfa66a;
-    --tile-rule: #c9a95a;
+    --felt: #2a7466;
+    --felt-deep: #1d5a4f;
+    --panel: rgba(12, 44, 39, 0.55);
+    --panel-ink: #f3eedf;
+    --panel-dim: rgba(243, 238, 223, 0.66);
+    --tile: #f6f0df;
+    --tile-hi: #fffbef;
+    --tile-side: #d6cba9;
+    --tile-side-deep: #bfb28b;
     --tile-ink: #23272b;
-    --tile-red: #c4382f;
-    --tile-green: #1e7a48;
-    --tile-blue: #2356a3;
-    --lapis: #1b3358;
-    --turquoise: #34b0a5;
-    --gold: #e2bd62;
-    --gold-deep: #a67c2e;
-    --gold-glow: rgba(226, 189, 98, 0.55);
-    --btn: #f7f1e1;
+    --tile-red: #c5352c;
+    --tile-green: #1f7a3e;
+    --tile-blue: #1f4fa4;
+    --gold: #f4c65a;
+    --gold-glow: rgba(244, 198, 90, 0.55);
+    --btn: #f6f0df;
     --btn-ink: #23272b;
-    --btn-side: #b48a3a;
+    --btn-side: #c9a468;
     --danger: #e26b62;
     --font-ui: 'Atkinson Hyperlegible', 'Helvetica Neue', Arial, sans-serif;
-    --font-display: 'Cormorant Garamond', 'Georgia', 'Times New Roman', serif;
-    --font-display-fa: 'Noto Nastaliq Urdu', 'Vazirmatn', 'Geeza Pro', serif;
+    --font-cjk: 'Ma Shan Zheng', 'PingFang TC', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK TC', serif;
   }
   :root[lang="fa"] { --font-ui: 'Vazirmatn', 'Geeza Pro', 'Noto Naskh Arabic', 'Helvetica Neue', sans-serif; }
   :root[lang="fa"] .stat span, :root[lang="fa"] .layouts .label, :root[lang="fa"] button.choice .lv { text-transform: none; letter-spacing: 0; font-size: 14px; }
@@ -59,19 +52,19 @@
   header .right { display: flex; align-items: center; gap: 14px; }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --felt: #172d52;
-      --felt-deep: #0c1a33;
-      --panel: rgba(4, 12, 30, 0.62);
-      --panel-ink: #ece4cf;
-      --panel-dim: rgba(236, 228, 207, 0.62);
+      --felt: #17403a;
+      --felt-deep: #0f2e2a;
+      --panel: rgba(4, 20, 18, 0.6);
+      --panel-ink: #ece6d4;
+      --panel-dim: rgba(236, 230, 212, 0.62);
     }
   }
   :root[data-theme="dark"] {
-    --felt: #172d52;
-    --felt-deep: #0c1a33;
-    --panel: rgba(4, 12, 30, 0.62);
-    --panel-ink: #ece4cf;
-    --panel-dim: rgba(236, 228, 207, 0.62);
+    --felt: #17403a;
+    --felt-deep: #0f2e2a;
+    --panel: rgba(4, 20, 18, 0.6);
+    --panel-ink: #ece6d4;
+    --panel-dim: rgba(236, 230, 212, 0.62);
   }
 
   * { box-sizing: border-box; }
@@ -83,8 +76,8 @@
     color: var(--panel-ink);
     background-color: var(--felt);
     background-image:
-      radial-gradient(ellipse at 50% 40%, rgba(255, 240, 200, 0.10), rgba(0,0,0,0) 62%),
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='96' viewBox='0 0 96 128'%3E%3Cg fill='%23f3e4bd' fill-opacity='0.045'%3E%3Cpath d='M24 58 C9 49 6 27 15 15 C19 9 25 6 30 8 C34 10 33 15 29 16 C39 25 39 47 24 58 Z'/%3E%3Cpath transform='translate(48 64) rotate(180) translate(-24 -32)' d='M24 58 C9 49 6 27 15 15 C19 9 25 6 30 8 C34 10 33 15 29 16 C39 25 39 47 24 58 Z'/%3E%3Cpath transform='translate(48 0)' d='M24 58 C9 49 6 27 15 15 C19 9 25 6 30 8 C34 10 33 15 29 16 C39 25 39 47 24 58 Z'/%3E%3Cpath transform='translate(96 64) rotate(180) translate(-24 -32)' d='M24 58 C9 49 6 27 15 15 C19 9 25 6 30 8 C34 10 33 15 29 16 C39 25 39 47 24 58 Z'/%3E%3C/g%3E%3C/svg%3E"),
+      radial-gradient(ellipse at 50% 40%, rgba(255,255,255,0.08), rgba(0,0,0,0) 60%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='.085' stroke-width='1.4'%3E%3Ccircle cx='28' cy='28' r='10'/%3E%3Ccircle cx='0' cy='0' r='10'/%3E%3Ccircle cx='56' cy='0' r='10'/%3E%3Ccircle cx='0' cy='56' r='10'/%3E%3Ccircle cx='56' cy='56' r='10'/%3E%3Ccircle cx='28' cy='28' r='3'/%3E%3C/g%3E%3C/svg%3E"),
       linear-gradient(var(--felt), var(--felt-deep));
     overscroll-behavior: none;
     -webkit-user-select: none; user-select: none;
@@ -105,10 +98,7 @@
     margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 0.01em;
     display: flex; align-items: baseline; gap: 12px;
   }
-  header h1 { font-family: var(--font-display); font-size: 27px; letter-spacing: 0.02em; }
-  :root[lang="fa"] header h1 { font-family: var(--font-display-fa); font-size: 24px; line-height: 1.7; }
-  .mark { width: 30px; height: 30px; flex: none; align-self: center; }
-  .mark .st { fill: var(--gold); } .mark .ct { fill: var(--felt); }
+  header h1 .cjk { font-family: var(--font-cjk); font-weight: 400; font-size: 26px; color: var(--gold); line-height: 1; }
   header .sub { font-size: 15px; color: var(--panel-dim); }
 
   main.play {
@@ -120,7 +110,7 @@
   }
   .board-wrap { position: relative; min-height: 0; min-width: 0; display: grid; place-items: center; }
   #board {
-    position: relative; z-index: 0;
+    position: relative;
     width: calc(var(--tw) * 15.75);
     height: calc(var(--tw) * 11.45); /* overwritten per layout */
   }
@@ -133,70 +123,31 @@
     width: calc(var(--tw) * 0.9); height: calc(var(--tw) * 1.3333 * 0.9);
     padding: calc(var(--tw) * 0.055) calc(var(--tw) * 0.055) calc(var(--tw) * 0.07); border: 0; margin: 0;
     border-radius: calc(var(--tw) * 0.06);
-    background: linear-gradient(160deg, #fffdf3, var(--tile-hi) 50%, #f2ebd9);
-    filter: drop-shadow(calc(var(--side) * 1.2 + var(--z) * var(--tw) * 0.03) calc(var(--side) * 1.8 + var(--z) * var(--tw) * 0.05) calc(var(--tw) * 0.1 + var(--z) * var(--tw) * 0.05) rgba(0, 0, 0, 0.4));
+    background: radial-gradient(ellipse at 28% 18%, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0) 55%), linear-gradient(160deg, #fffdf4, var(--tile-hi) 50%, #efe7d4);
+    box-shadow: var(--ext);
+    filter: drop-shadow(calc(var(--side) * 1.2 + var(--z) * var(--tw) * 0.03) calc(var(--side) * 1.8 + var(--z) * var(--tw) * 0.05) calc(var(--tw) * 0.1 + var(--z) * var(--tw) * 0.05) rgba(0, 0, 0, 0.36));
     cursor: pointer;
     touch-action: manipulation;
     transition: transform 120ms ease, box-shadow 120ms ease, opacity 200ms ease, filter 160ms ease;
     outline: none;
   }
-  .tile::before, .tile::after { content: ""; position: absolute; }  /* sides stay tappable, so a tap on the edge of a tile never falls through to the one below */
-  .tile::before {  /* right side */
-    left: calc(100% - 0.5px); top: 0; width: var(--side); height: 100%;
-    background: linear-gradient(90deg, var(--tile-side), var(--tile-side-deep));
-    transform: skewY(45deg); transform-origin: 0 0;
-    border-radius: 0 calc(var(--tw) * 0.03) 0 0;
-  }
-  .tile::after {   /* bottom side */
-    left: 0; top: calc(100% - 0.5px); width: 100%; height: var(--side);
-    background: var(--tile-side-deep);
-    transform: skewX(45deg); transform-origin: 0 0;
-    border-radius: 0 0 calc(var(--tw) * 0.03) 0;
-  }
+  /* the drawn sides are shadows, so this invisible flap keeps the edge tappable: a tap on a tile's edge never falls through to the one below */
+  .tile::after { content: ""; position: absolute; inset: 0 calc(var(--side) * -1) calc(var(--side) * -1) 0; }
   /* blocked tiles sink into shade so the stacking reads at a glance; free tiles stay bright */
   .tile.blocked {
-    filter: brightness(0.66) saturate(0.45) drop-shadow(calc(var(--side) * 1.2 + var(--z) * var(--tw) * 0.03) calc(var(--side) * 1.8 + var(--z) * var(--tw) * 0.05) calc(var(--tw) * 0.1 + var(--z) * var(--tw) * 0.05) rgba(0, 0, 0, 0.3));
-    background: linear-gradient(160deg, #cfd0c8, #c0c1b7 55%, #b1b2a8);
-  }
-  /* a blocked tile wears a fine lattice veil, like a tile seen through a mashrabiya screen */
-  .tile .v {
-    position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cg fill='none' stroke='%231b3358' stroke-opacity='0.17' stroke-width='1'%3E%3Cpath d='M0 8 L8 0 L16 8 L8 16 Z'/%3E%3C/g%3E%3C/svg%3E"), linear-gradient(rgba(27, 51, 88, 0.16), rgba(27, 51, 88, 0.24));
-    transition: opacity 160ms ease;
-  }
-  .tile.blocked .v { opacity: 1; }
-  .tile.selected .v { opacity: 0; }
-  /* the back of a tile: lapis with gold paisley, seen only as a matched pair flips away */
-  .tile .bk {
-    position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0;
-    transform: scaleX(-1);
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='128' viewBox='0 0 96 128'%3E%3Cg fill='none' stroke='%23e6c56f' stroke-width='1.3' stroke-linejoin='round'%3E%3Cg stroke-opacity='0.85'%3E%3Cpath d='M24 58 C9 49 6 27 15 15 C19 9 25 6 30 8 C34 10 33 15 29 16 C39 25 39 47 24 58 Z'/%3E%3Cpath d='M24 50 C15 44 13 30 19 21 C22 17 26 16 28 18 C29 20 28 22 26 22 C33 29 33 43 24 50 Z' stroke-opacity='0.6'/%3E%3C/g%3E%3Cg transform='translate(48 64) rotate(180) translate(-24 -32)' stroke-opacity='0.85'%3E%3Cpath d='M24 58 C9 49 6 27 15 15 C19 9 25 6 30 8 C34 10 33 15 29 16 C39 25 39 47 24 58 Z'/%3E%3Cpath d='M24 50 C15 44 13 30 19 21 C22 17 26 16 28 18 C29 20 28 22 26 22 C33 29 33 43 24 50 Z' stroke-opacity='0.6'/%3E%3C/g%3E%3Cg transform='translate(48 0)' stroke-opacity='0.85'%3E%3Cpath d='M24 58 C9 49 6 27 15 15 C19 9 25 6 30 8 C34 10 33 15 29 16 C39 25 39 47 24 58 Z'/%3E%3Cpath d='M24 50 C15 44 13 30 19 21 C22 17 26 16 28 18 C29 20 28 22 26 22 C33 29 33 43 24 50 Z' stroke-opacity='0.6'/%3E%3C/g%3E%3Cg transform='translate(96 64) rotate(180) translate(-24 -32)' stroke-opacity='0.85'%3E%3Cpath d='M24 58 C9 49 6 27 15 15 C19 9 25 6 30 8 C34 10 33 15 29 16 C39 25 39 47 24 58 Z'/%3E%3Cpath d='M24 50 C15 44 13 30 19 21 C22 17 26 16 28 18 C29 20 28 22 26 22 C33 29 33 43 24 50 Z' stroke-opacity='0.6'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") center / 48px 64px, linear-gradient(160deg, #24427a, var(--lapis) 60%, #142a4f);
-    box-shadow: inset 0 0 0 calc(var(--tw) * 0.035) var(--lapis), inset 0 0 0 calc(var(--tw) * 0.035 + 1.2px) var(--gold), inset 0 0 0 calc(var(--tw) * 0.05 + 1.2px) var(--lapis), inset 0 0 0 calc(var(--tw) * 0.05 + 2px) rgba(226, 189, 98, 0.55);
+    filter: brightness(0.62) saturate(0.4) drop-shadow(calc(var(--side) * 1.2 + var(--z) * var(--tw) * 0.03) calc(var(--side) * 1.8 + var(--z) * var(--tw) * 0.05) calc(var(--tw) * 0.1 + var(--z) * var(--tw) * 0.05) rgba(0, 0, 0, 0.3));
+    background: radial-gradient(ellipse at 28% 18%, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 55%), linear-gradient(160deg, #d2d1c5, #c3c2b4 50%, #b1b0a2);
+    box-shadow: var(--ext-blocked);
   }
   #board::before {
     content: ""; position: absolute; inset: 6% 2% -4% 2%; border-radius: 50%;
-    background: radial-gradient(ellipse at 50% 55%, rgba(0, 0, 0, 0.26), rgba(0, 0, 0, 0) 68%);
+    background: radial-gradient(ellipse at 50% 55%, rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0) 68%);
     pointer-events: none;
   }
-  /* a hairline gold frame with a rosette in each corner, the way a carpet holds its field */
-  #board::after {
-    content: ""; position: absolute; z-index: -1; pointer-events: none;
-    inset: calc(var(--tw) * -0.55) calc(var(--tw) * -0.5) calc(var(--tw) * -0.42) calc(var(--tw) * -0.62);
-    border: 1px solid rgba(217, 180, 92, 0.42); border-radius: 8px;
-    outline: 1px solid rgba(217, 180, 92, 0.18); outline-offset: 5px;
-    background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 40 40'%3E%3Cg fill='%23d9b45c' fill-opacity='0.55'%3E%3Cpath d='M20 2 L24.5 15.5 L38 20 L24.5 24.5 L20 38 L15.5 24.5 L2 20 L15.5 15.5Z'/%3E%3Cpath transform='rotate(45 20 20)' d='M20 7 L23.3 16.7 L33 20 L23.3 23.3 L20 33 L16.7 23.3 L7 20 L16.7 16.7Z'/%3E%3C/g%3E%3Ccircle cx='20' cy='20' r='4' fill='%231b3358'/%3E%3Ccircle cx='20' cy='20' r='1.8' fill='%23d9b45c'/%3E%3C/svg%3E") 5px 5px / 22px 22px no-repeat,
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 40 40'%3E%3Cg fill='%23d9b45c' fill-opacity='0.55'%3E%3Cpath d='M20 2 L24.5 15.5 L38 20 L24.5 24.5 L20 38 L15.5 24.5 L2 20 L15.5 15.5Z'/%3E%3Cpath transform='rotate(45 20 20)' d='M20 7 L23.3 16.7 L33 20 L23.3 23.3 L20 33 L16.7 23.3 L7 20 L16.7 16.7Z'/%3E%3C/g%3E%3Ccircle cx='20' cy='20' r='4' fill='%231b3358'/%3E%3Ccircle cx='20' cy='20' r='1.8' fill='%23d9b45c'/%3E%3C/svg%3E") right 5px top 5px / 22px 22px no-repeat,
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 40 40'%3E%3Cg fill='%23d9b45c' fill-opacity='0.55'%3E%3Cpath d='M20 2 L24.5 15.5 L38 20 L24.5 24.5 L20 38 L15.5 24.5 L2 20 L15.5 15.5Z'/%3E%3Cpath transform='rotate(45 20 20)' d='M20 7 L23.3 16.7 L33 20 L23.3 23.3 L20 33 L16.7 23.3 L7 20 L16.7 16.7Z'/%3E%3C/g%3E%3Ccircle cx='20' cy='20' r='4' fill='%231b3358'/%3E%3Ccircle cx='20' cy='20' r='1.8' fill='%23d9b45c'/%3E%3C/svg%3E") left 5px bottom 5px / 22px 22px no-repeat,
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 40 40'%3E%3Cg fill='%23d9b45c' fill-opacity='0.55'%3E%3Cpath d='M20 2 L24.5 15.5 L38 20 L24.5 24.5 L20 38 L15.5 24.5 L2 20 L15.5 15.5Z'/%3E%3Cpath transform='rotate(45 20 20)' d='M20 7 L23.3 16.7 L33 20 L23.3 23.3 L20 33 L16.7 23.3 L7 20 L16.7 16.7Z'/%3E%3C/g%3E%3Ccircle cx='20' cy='20' r='4' fill='%231b3358'/%3E%3Ccircle cx='20' cy='20' r='1.8' fill='%23d9b45c'/%3E%3C/svg%3E") right 5px bottom 5px / 22px 22px no-repeat;
-  }
-  .demo .tile { z-index: auto; }
   .tile svg { display: block; width: 100%; height: 100%; overflow: visible; }
   .tile .r { fill: var(--tile-red); } .tile .g { fill: var(--tile-green); } .tile .b { fill: var(--tile-blue); }
   .tile .k { fill: var(--tile-ink); } .tile .p { fill: var(--tile); } .tile .y { fill: #e8b830; }
   .tile .fb { fill: none; stroke: var(--tile-blue); }
-  .tile .rule { fill: none; stroke: var(--tile-rule); stroke-width: 0.9; opacity: 0.8; }
-  .tile .gd { fill: var(--gold-deep); }
   .tile text { font-family: 'Vazirmatn', 'Geeza Pro', 'Noto Naskh Arabic', sans-serif; font-weight: 700; text-anchor: middle; dominant-baseline: central; }
   /* a picked-up tile: lifted a little and its face warms to gold, the way a lamp would catch it */
   .tile.selected {
@@ -205,34 +156,22 @@
     filter: drop-shadow(calc(var(--side) * 1.8) calc(var(--side) * 2.6) calc(var(--tw) * 0.16) rgba(0, 0, 0, 0.5));
     z-index: 9000 !important;
   }
-  .tile.selected::before { background: linear-gradient(90deg, #d9b45a, #b88f3a); }
-  .tile.selected::after { background: #b88f3a; }
-  /* a matched pair turns over to show its back, then lifts off the table */
-  .tile.gone { animation: flipOut 720ms ease-in-out forwards; pointer-events: none; z-index: 9500 !important; }
-  .tile.gone svg { animation: faceOut 720ms linear forwards; }
-  .tile.gone .bk { animation: backIn 720ms linear forwards; }
-  .tile.gone .v { opacity: 0; }
-  @keyframes flipOut {
-    0% { transform: perspective(600px) rotateY(0); opacity: 1; }
-    45% { transform: perspective(600px) rotateY(90deg); opacity: 1; }
-    72% { transform: perspective(600px) rotateY(180deg); opacity: 1; }
-    100% { transform: perspective(600px) rotateY(180deg) translateY(calc(var(--tw) * -0.35)); opacity: 0; }
-  }
-  @keyframes faceOut { 0%, 45% { opacity: 1; } 46%, 100% { opacity: 0; } }
-  @keyframes backIn { 0%, 45% { opacity: 0; } 46%, 100% { opacity: 1; } }
+  .tile.selected { box-shadow: var(--ext-sel); }
+  .tile.gone { opacity: 0; transform: scale(0.7); pointer-events: none; }
   .tile.shake { animation: shake 320ms ease; }
   @keyframes shake {
     0%, 100% { transform: translateX(0); }
     20% { transform: translateX(-5px); } 40% { transform: translateX(5px); }
     60% { transform: translateX(-4px); } 80% { transform: translateX(4px); }
   }
-  .tile:focus-visible { box-shadow: 0 0 0 3px var(--gold); }
+  .tile:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .tile .rule { fill: none; stroke: #cfc39f; stroke-width: 0.8; opacity: 0.9; }
+  .tile .sh { fill: rgba(40, 30, 10, 0.16); }
 
   /* side panel */
   aside.panel {
     display: grid; gap: 14px; align-content: start;
     background: var(--panel);
-    border: 1px solid var(--panel-line);
     border-radius: 20px;
     padding: 16px;
     backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
@@ -266,7 +205,7 @@
     border-radius: 12px; border: 2px solid rgba(243, 238, 223, 0.25); background: rgba(243, 238, 223, 0.08); color: var(--panel-ink);
     cursor: pointer; touch-action: manipulation;
   }
-  button.choice[aria-checked="true"] { background: linear-gradient(160deg, #f0d284, var(--gold) 60%, #cfa650); border-color: var(--gold); color: #2a2410; }
+  button.choice[aria-checked="true"] { background: var(--gold); border-color: var(--gold); color: #2a2410; }
   button.choice:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
   button.choice.help { min-height: 50px; font-size: 17px; }
   .dialog.wide { width: min(94vw, 620px); text-align: start; max-height: 92dvh; overflow-y: auto; }
@@ -282,7 +221,7 @@
   .veil {
     position: fixed; inset: 0; z-index: 20000;
     display: grid; place-items: center;
-    background: rgba(8, 16, 36, 0.6);
+    background: rgba(6, 26, 23, 0.55);
     padding: 20px;
   }
   .dialog {
@@ -293,9 +232,7 @@
     display: grid; gap: 14px; text-align: center;
   }
   .dialog h2 { margin: 0; font-size: 26px; text-wrap: balance; }
-  .dialog h2 { font-family: var(--font-display); font-size: 30px; letter-spacing: 0.01em; display: flex; align-items: center; justify-content: center; gap: 10px; }
-  :root[lang="fa"] .dialog h2 { font-family: var(--font-display-fa); font-size: 26px; line-height: 1.7; }
-  .dialog h2 .mark .st { fill: var(--gold-deep); } .dialog h2 .mark .ct { fill: var(--tile); }
+  .dialog h2 .cjk { font-family: var(--font-cjk); font-weight: 400; color: var(--tile-red); margin-right: 8px; }
   .dialog p { margin: 0; font-size: 17px; line-height: 1.45; color: #4a4f55; }
   .dialog .row { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; margin-top: 6px; }
   .dialog .row.three { grid-template-columns: 1fr 1fr 1fr; }
@@ -338,15 +275,13 @@
   @media (prefers-reduced-motion: reduce) {
     .tile, button.tool, button.big { transition: none; }
     .tile.shake { animation: none; }
-    .tile.gone, .tile.gone svg, .tile.gone .bk { animation: none; }
-    .tile.gone { opacity: 0; }
   }
 </style>
 </head>
 <body>
 <div class="app">
   <header>
-    <h1><svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><path class="st" d="M20 1 L24.8 15.2 L39 20 L24.8 24.8 L20 39 L15.2 24.8 L1 20 L15.2 15.2Z"/><path class="st" transform="rotate(45 20 20)" d="M20 6 L23.5 16.5 L34 20 L23.5 23.5 L20 34 L16.5 23.5 L6 20 L16.5 16.5Z"/><circle class="ct" cx="20" cy="20" r="4.6"/><circle class="st" cx="20" cy="20" r="2"/></svg><span data-i18n="title">Kitchen Table Mahjong</span></h1>
+    <h1><span class="cjk" aria-hidden="true">麻雀</span><span data-i18n="title">Kitchen Table Mahjong</span></h1>
     <div class="right"><div class="sub" id="status">Match two free tiles to clear them</div><button class="lang" id="langBtn" type="button">فارسی</button></div>
   </header>
   <main class="play">
@@ -411,7 +346,7 @@
 
 <div class="veil" id="solvedDialog" hidden role="dialog" aria-modal="true" aria-labelledby="solvedTitle">
   <div class="dialog">
-    <h2 id="solvedTitle"><svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><path class="st" d="M20 1 L24.8 15.2 L39 20 L24.8 24.8 L20 39 L15.2 24.8 L1 20 L15.2 15.2Z"/><path class="st" transform="rotate(45 20 20)" d="M20 6 L23.5 16.5 L34 20 L23.5 23.5 L20 34 L16.5 23.5 L6 20 L16.5 16.5Z"/><circle class="ct" cx="20" cy="20" r="4.6"/><circle class="st" cx="20" cy="20" r="2"/></svg><span data-i18n="solvedTitle">Table cleared!</span></h2>
+    <h2 id="solvedTitle"><span class="cjk" aria-hidden="true">和</span><span data-i18n="solvedTitle">Table cleared!</span></h2>
     <p id="solvedText">All 144 tiles matched.</p>
     <div class="row">
       <button id="solvedLook" data-i18n="look">Look at it</button>
@@ -638,12 +573,13 @@
   const T = (txt, x, y, size, cls) => `<text x="${x}" y="${y}" font-size="${size}" class="${cls}">${txt}</text>`;
   const RULE = '<rect class="rule" x="-2.2" y="-2.5" width="64.4" height="85.4" rx="3.2"/>';
   const dot = (x, y, r, c) => `<circle cx="${x}" cy="${y}" r="${r}" class="${c}"/><circle cx="${x}" cy="${y}" r="${(r * 0.62).toFixed(1)}" class="p"/><circle cx="${x}" cy="${y}" r="${(r * 0.3).toFixed(1)}" class="${c}"/>`;
-  // the bamboo suit is drawn as cypress trees, the tree of persian gardens and carpets; same count and footprint as a stick
   const stick = (x, y, h, c) => {
-    const w = h * 0.24, t = y - h / 2, b = y + h / 2 - 2.6, f = v => v.toFixed(1);
-    return `<path d="M${f(x + 1.6)} ${f(t)} C${f(x + w * 1.5)} ${f(t + h * 0.3)} ${f(x + w * 1.55)} ${f(y + h * 0.2)} ${f(x)} ${f(b)} C${f(x - w * 1.55)} ${f(y + h * 0.2)} ${f(x - w * 1.2)} ${f(t + h * 0.3)} ${f(x + 1.6)} ${f(t)} Z" class="${c}"/>` +
-      `<rect x="${f(x - 1)}" y="${f(b - 0.5)}" width="2" height="3.2" class="${c}"/>` +
-      `<path d="M${f(x + 0.6)} ${f(t + 4)} L${f(x)} ${f(b - 3)}" stroke="#fffbee" stroke-width="1.1" stroke-opacity=".6" fill="none"/>`;
+    const w = 7, y0 = y - h / 2;
+    return `<rect x="${x - w / 2}" y="${y0}" width="${w}" height="${h}" rx="3" class="${c}"/>` +
+      `<rect x="${x - w / 2 - 1.2}" y="${y - h / 6 - 1.3}" width="${w + 2.4}" height="2.6" rx="1.3" class="${c}"/>` +
+      `<rect x="${x - w / 2 - 1.2}" y="${y + h / 6 - 1.3}" width="${w + 2.4}" height="2.6" rx="1.3" class="${c}"/>` +
+      `<rect x="${x + 0.6}" y="${y0 + 1}" width="${w / 2 - 0.6}" height="${h - 2}" rx="2" class="sh"/>` +
+      `<rect x="${x - 1.8}" y="${y0 + 3}" width="1.8" height="${h - 6}" rx="0.9" class="p" opacity=".6"/>`;
   };
   const bird = () => `
     <ellipse cx="31" cy="44" rx="13" ry="9" class="g"/>
@@ -708,7 +644,7 @@
     else if (kind === 'dragW') body = `<rect x="11" y="12" width="38" height="56" rx="3" class="fb" stroke-width="3.2"/><rect x="17" y="18" width="26" height="44" rx="2" class="fb" stroke-width="1.6"/>` + T('سفید', 30, 40, 12, 'b');
     else if (kind.startsWith('flower')) { const n = +kind.slice(6); body = blossom() + T(FLOWER[n], 30, 68, 11, 'g') + T(FA_DIGIT[n], 10, 10, 12, 'r lat'); }
     else if (kind.startsWith('season')) { const n = +kind.slice(6); body = sun() + T(SEASON[n], 30, 68, 11, 'b') + T(FA_DIGIT[n], 10, 10, 12, 'b lat'); }
-    return `<svg viewBox="0 0 60 80" aria-hidden="true">${RULE}${body}</svg><i class="v"></i><i class="bk"></i>`;
+    return `<svg viewBox="0 0 60 80" aria-hidden="true">${RULE}${body}</svg>`;
   }
   const FACE = {}; KINDS.forEach(k => FACE[k] ||= face(k));
   const NAME = k => k.startsWith('dot') ? `${k.slice(3)} of circles` : k.startsWith('bam') ? `${k.slice(3)} of bamboo` : k.startsWith('crak') ? `${k.slice(4)} of characters`
@@ -718,7 +654,7 @@
   // ---------- state ----------
   const KEY = 'kitchen-table-mahjong-v1';
   let S = null; // { kinds[], removed[], history[[a,b]], elapsed, solved }
-  let sel = -1, tickTimer = null, lastTick = 0;
+  let sel = -1, tickTimer = null, lastTick = 0, hintCursor = 0;
   const board = $('#board'), tiles = [];
   const el = { left: $('#left'), timer: $('#timer'), status: $('#status'), undo: $('#undoBtn'), shuffleBtn: $('#shuffleBtn'), newBtn: $('#newBtn') };
 
@@ -823,7 +759,7 @@
   }
   function removePair(a, b) {
     for (const i of [a, b]) { tiles[i].classList.remove('selected'); tiles[i].classList.add('gone'); S.removed[i] = true; }
-    setTimeout(() => { for (const i of [a, b]) if (S.removed[i]) tiles[i].hidden = true; }, 760);
+    setTimeout(() => { for (const i of [a, b]) if (S.removed[i]) tiles[i].hidden = true; }, 220);
     S.history.push([a, b]); sel = -1;
     if (S.removed.every(r => r)) { S.solved = true; stopClock(); $('#solvedText').textContent = t('solvedText', { n: N, t: fmt(S.elapsed) }); show('#solvedDialog'); }
     else if (!hasMoves()) { resetStuck(); show('#stuckDialog'); }
@@ -844,9 +780,12 @@
     const free = []; for (let i = 0; i < N; i++) if (pres[i] && isFree(i, pres)) free.push(i);
     const byG = {}; for (const i of free) (byG[groupOf(S.kinds[i])] ||= []).push(i);
     const count = {}; for (let i = 0; i < N; i++) if (pres[i]) { const g = groupOf(S.kinds[i]); count[g] = (count[g] || 0) + 1; }
-    const groups = Object.entries(byG).filter(([g, a]) => a.length >= 2);
-    const safe = groups.filter(([g, a]) => count[g] === a.length);
-    const pick = (safe.length ? safe : groups)[(Math.random() * (safe.length ? safe : groups).length) | 0];
+    const groups = Object.entries(byG).filter(([g, a]) => a.length >= 2).sort((a, b) => a[0] < b[0] ? -1 : 1);
+    const safe = groups.filter(([g, a]) => count[g] === a.length), rest = groups.filter(([g, a]) => count[g] !== a.length);
+    const ordered = safe.concat(rest);
+    let pick = ordered[hintCursor % ordered.length];
+    if (sel >= 0 && pick[1].includes(sel) && ordered.length > 1) pick = ordered[(hintCursor + 1) % ordered.length];  // never hand back the tile already in hand
+    hintCursor = (ordered.indexOf(pick) + 1) % ordered.length;
     if (sel >= 0) tiles[sel].classList.remove('selected');
     sel = pick[1][0]; tiles[sel].classList.add('selected');
     paintPanel();
@@ -884,6 +823,7 @@
       const maxX = Math.max(...spec.map(t => t[1])), maxY = Math.max(...spec.map(t => t[2])), maxZ = Math.max(...spec.map(t => t[3]));
       demo.style.width = `calc(var(--tw) * ${(maxX + 1.3 + maxZ * 0.11).toFixed(2)})`;
       demo.style.height = `calc(var(--tw) * ${((maxY + 1) * 1.3333 + 0.35).toFixed(2)})`;
+      setExtrusion(demo, 52);
       for (const [kind, x, y, z, blocked, selected] of spec) {
         const b = document.createElement('div');
         b.className = 'tile' + (blocked ? ' blocked' : '') + (selected ? ' selected' : '');
@@ -909,11 +849,25 @@
 
   // ---------- sizing ----------
   const wrap = $('.board-wrap');
+  // the sides of a tile: one shadow per pixel of depth, shading from the lit edge to the deep edge, plus a soft bevel on the face
+  function mix(a, b, t) { return '#' + [0, 1, 2].map(i => Math.round(parseInt(a.slice(1 + i * 2, 3 + i * 2), 16) * (1 - t) + parseInt(b.slice(1 + i * 2, 3 + i * 2), 16) * t).toString(16).padStart(2, '0')).join(''); }
+  function extrude(tw, light, deep, edge) {
+    const n = Math.max(2, Math.round(tw * 0.11)), out = ['inset 0 1px 0 rgba(255,255,255,0.85)', 'inset 1px 0 0 rgba(255,255,255,0.5)', 'inset 0 -1px 0 rgba(90,70,30,0.14)', 'inset -1px 0 0 rgba(90,70,30,0.1)'];
+    for (let k = 1; k <= n; k++) out.push(`${k}px ${k}px 0 ${mix(light, deep, (k - 1) / Math.max(1, n - 1))}`);
+    out.push(`${n + 1}px ${n + 1}px 0 ${edge}`);
+    return out.join(', ');
+  }
+  function setExtrusion(target, tw) {
+    target.style.setProperty('--ext', extrude(tw, '#e2d8b8', '#bdaf85', '#a5975f'));
+    target.style.setProperty('--ext-blocked', extrude(tw, '#b8b7ab', '#94937f', '#7e7d6b'));
+    target.style.setProperty('--ext-sel', extrude(tw, '#e6c56a', '#b88f3a', '#9a7328'));
+  }
   function fit() {
     const r = wrap.getBoundingClientRect();
     const W = r.width - 8, H = r.height - 8;
     const tw = Math.max(24, Math.floor(Math.min(W / EXT.w, H / EXT.h)));
     board.style.setProperty('--tw', tw + 'px');
+    setExtrusion(board, tw);
   }
   new ResizeObserver(fit).observe(wrap);
   window.addEventListener('orientationchange', () => setTimeout(fit, 120));
