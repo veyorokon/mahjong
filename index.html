@@ -11,11 +11,8 @@
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="manifest" href="manifest.json">
+<link rel="preload" as="image" href="faces.png" fetchpriority="high">
 <title>Kitchen Table Mahjong</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&text=%E4%B8%80%E4%BA%8C%E4%B8%89%E5%9B%9B%E4%BA%94%E5%85%AD%E4%B8%83%E5%85%AB%E4%B9%9D%E8%90%AC%E6%9D%B1%E5%8D%97%E8%A5%BF%E5%8C%97%E4%B8%AD%E7%99%BC%E6%A2%85%E8%98%AD%E8%8F%8A%E7%AB%B9%E6%98%A5%E5%A4%8F%E7%A7%8B%E5%86%AC%E9%BA%BB%E9%9B%80%E5%92%8C&display=swap">
 <style>
   :root {
     --felt: #2a7466;
@@ -37,8 +34,8 @@
     --btn-ink: #23272b;
     --btn-side: #c9a468;
     --danger: #e26b62;
-    --font-ui: 'Atkinson Hyperlegible', 'Helvetica Neue', Arial, sans-serif;
-    --font-cjk: 'Ma Shan Zheng', 'PingFang TC', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK TC', serif;
+    --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    --font-cjk: 'PingFang TC', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK TC', serif;
   }
   button.lang {
     font-family: var(--font-ui); font-size: 15px; font-weight: 700; color: var(--panel-ink);
@@ -122,17 +119,15 @@
     border-radius: calc(var(--tw) * 0.06);
     background: radial-gradient(ellipse at 28% 18%, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0) 55%), linear-gradient(160deg, #fffdf4, var(--tile-hi) 50%, #efe7d4);
     box-shadow: var(--ext);
-    filter: drop-shadow(calc(var(--side) * 1.2 + var(--z) * var(--tw) * 0.03) calc(var(--side) * 1.8 + var(--z) * var(--tw) * 0.05) calc(var(--tw) * 0.1 + var(--z) * var(--tw) * 0.05) rgba(0, 0, 0, 0.36));
     cursor: pointer;
     touch-action: manipulation;
-    transition: transform 180ms cubic-bezier(0.2, 0.8, 0.3, 1.15), box-shadow 180ms ease, opacity 260ms ease, filter 220ms ease, background 220ms ease;
+    transition: transform 180ms cubic-bezier(0.2, 0.8, 0.3, 1.15), opacity 260ms ease, background 220ms ease;
     outline: none;
   }
   /* the drawn sides are shadows, so this invisible flap keeps the edge tappable: a tap on a tile's edge never falls through to the one below */
   .tile::after { content: ""; position: absolute; inset: 0 calc(var(--side) * -1) calc(var(--side) * -1) 0; }
   /* blocked tiles sink into shade so the stacking reads at a glance; free tiles stay bright */
   .tile.blocked {
-    filter: brightness(0.62) saturate(0.4) drop-shadow(calc(var(--side) * 1.2 + var(--z) * var(--tw) * 0.03) calc(var(--side) * 1.8 + var(--z) * var(--tw) * 0.05) calc(var(--tw) * 0.1 + var(--z) * var(--tw) * 0.05) rgba(0, 0, 0, 0.3));
     background: radial-gradient(ellipse at 28% 18%, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 55%), linear-gradient(160deg, #d2d1c5, #c3c2b4 50%, #b1b0a2);
     box-shadow: var(--ext-blocked);
   }
@@ -141,16 +136,15 @@
     background: radial-gradient(ellipse at 50% 55%, rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0) 68%);
     pointer-events: none;
   }
-  .tile svg { display: block; width: 100%; height: 100%; overflow: visible; }
-  .tile .r { fill: var(--tile-red); } .tile .g { fill: var(--tile-green); } .tile .b { fill: var(--tile-blue); }
-  .tile .k { fill: var(--tile-ink); } .tile .p { fill: var(--tile); } .tile .y { fill: #e8b830; }
-  .tile .fb { fill: none; stroke: var(--tile-blue); }
-  .tile text { font-family: 'Vazirmatn', 'Geeza Pro', 'Noto Naskh Arabic', sans-serif; font-weight: 700; text-anchor: middle; dominant-baseline: central; }
+  .tile .face {
+    display: block; width: 100%; height: 100%;
+    background: url("faces.png") no-repeat;
+    background-size: 700% 600%;
+  }
   /* a picked-up tile: lifted a little and its face warms to gold, the way a lamp would catch it */
   .tile.selected {
     transform: translate(calc(var(--side) * -0.6), calc(var(--side) * -0.6));
     background: linear-gradient(160deg, #fff1b8, #f7d878 60%, #edc65c);
-    filter: drop-shadow(calc(var(--side) * 1.8) calc(var(--side) * 2.6) calc(var(--tw) * 0.16) rgba(0, 0, 0, 0.5));
     z-index: 9000 !important;
   }
   .tile.selected { box-shadow: var(--ext-sel); }
@@ -163,14 +157,17 @@
     60% { outline: 3px solid var(--gold); outline-offset: 4px; }
     100% { outline: 3px solid transparent; outline-offset: 6px; }
   }
-  /* a fresh deal: tiles settle onto the table one after another, back rows first */
-  .tile.deal { animation: dealIn 380ms cubic-bezier(0.2, 0.8, 0.3, 1) both; animation-delay: var(--d, 0ms); }
-  @keyframes dealIn {
+  /* animate the table as one surface; animating 144 shadowed tiles separately overwhelms mobile Safari */
+  #board.deal-a { animation: boardDealA 240ms ease-out both; }
+  #board.deal-b { animation: boardDealB 240ms ease-out both; }
+  @keyframes boardDealA { from { opacity: 0.65; transform: translateY(-4px) scale(0.995); } }
+  @keyframes boardDealB { from { opacity: 0.65; transform: translateY(-4px) scale(0.995); } }
+  /* undo: the pair comes back down */
+  .tile.back { animation: tileBack 260ms ease-out both; }
+  @keyframes tileBack {
     from { opacity: 0; transform: translate(calc(var(--side) * -2), calc(var(--tw) * -0.5)); }
     to { opacity: 1; transform: none; }
   }
-  /* undo: the pair comes back down */
-  .tile.back { animation: dealIn 260ms ease-out both; }
   /* hint: the suggested tile nods */
   .tile.selected.hinted { animation: hintNod 520ms ease-in-out; }
   @keyframes hintNod {
@@ -184,9 +181,6 @@
     60% { transform: translateX(-4px); } 80% { transform: translateX(4px); }
   }
   .tile:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
-  .tile .rule { fill: none; stroke: #cfc39f; stroke-width: 0.8; opacity: 0.9; }
-  .tile .sh { fill: rgba(40, 30, 10, 0.16); }
-
   /* side panel */
   aside.panel {
     display: grid; gap: 14px; align-content: start;
@@ -304,7 +298,7 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .tile, button.tool, button.big, .stat b { transition: none; }
-    .tile.shake, .tile.freed, .tile.deal, .tile.back, .tile.hinted, .veil, .veil .dialog, .stat .bump { animation: none; }
+    #board.deal-a, #board.deal-b, .tile.shake, .tile.freed, .tile.back, .tile.hinted, .veil, .veil .dialog, .stat .bump { animation: none; }
   }
 </style>
 </head>
@@ -601,84 +595,26 @@
     return null;
   }
 
-  // ---------- tile faces (SVG, 60 x 80) ----------
-  const T = (txt, x, y, size, cls) => `<text x="${x}" y="${y}" font-size="${size}" class="${cls}">${txt}</text>`;
-  const RULE = '<rect class="rule" x="-2.2" y="-2.5" width="64.4" height="85.4" rx="3.2"/>';
-  const dot = (x, y, r, c) => `<circle cx="${x}" cy="${y}" r="${r}" class="${c}"/><circle cx="${x}" cy="${y}" r="${(r * 0.62).toFixed(1)}" class="p"/><circle cx="${x}" cy="${y}" r="${(r * 0.3).toFixed(1)}" class="${c}"/>`;
-  const stick = (x, y, h, c) => {
-    const w = 7, y0 = y - h / 2;
-    return `<rect x="${x - w / 2}" y="${y0}" width="${w}" height="${h}" rx="3" class="${c}"/>` +
-      `<rect x="${x - w / 2 - 1.2}" y="${y - h / 6 - 1.3}" width="${w + 2.4}" height="2.6" rx="1.3" class="${c}"/>` +
-      `<rect x="${x - w / 2 - 1.2}" y="${y + h / 6 - 1.3}" width="${w + 2.4}" height="2.6" rx="1.3" class="${c}"/>` +
-      `<rect x="${x + 0.6}" y="${y0 + 1}" width="${w / 2 - 0.6}" height="${h - 2}" rx="2" class="sh"/>` +
-      `<rect x="${x - 1.8}" y="${y0 + 3}" width="1.8" height="${h - 6}" rx="0.9" class="p" opacity=".6"/>`;
+  // ---------- tile faces ----------
+  // faces.png contains the 42 unique faces in the same order as this list.
+  const FACE_ORDER = [
+    ...Array.from({ length: 9 }, (_, i) => `dot${i + 1}`),
+    ...Array.from({ length: 9 }, (_, i) => `bam${i + 1}`),
+    ...Array.from({ length: 9 }, (_, i) => `crak${i + 1}`),
+    'windE', 'windS', 'windW', 'windN', 'dragR', 'dragG', 'dragW',
+    'flower1', 'flower2', 'flower3', 'flower4', 'season1', 'season2', 'season3', 'season4',
+  ];
+  const FACE_INDEX = Object.fromEntries(FACE_ORDER.map((kind, i) => [kind, i]));
+  const facePosition = kind => {
+    const i = FACE_INDEX[kind], col = i % 7, row = Math.floor(i / 7);
+    return `${(col * 100 / 6).toFixed(4)}% ${(row * 100 / 5).toFixed(4)}%`;
   };
-  const bird = () => `
-    <ellipse cx="31" cy="44" rx="13" ry="9" class="g"/>
-    <circle cx="19" cy="34" r="6.5" class="g"/>
-    <polygon points="11,33 15,31 15,35" class="r"/>
-    <circle cx="17.5" cy="33" r="1.4" class="p"/>
-    <path d="M42 40 L54 30 L52 42 L56 46 L43 47 Z" class="g"/>
-    <path d="M26 42 q8 -8 16 0 q-8 6 -16 0z" class="b"/>
-    <path d="M17 29 q2 -6 6 -3 q-4 0 -6 3z" class="r"/>
-    <rect x="27" y="52" width="2.6" height="12" rx="1.3" class="k"/>
-    <rect x="33" y="52" width="2.6" height="12" rx="1.3" class="k"/>
-    <rect x="18" y="63" width="24" height="2.6" rx="1.3" class="k"/>`;
-  const DOTS = {
-    1: `<circle cx="30" cy="40" r="19" class="g"/>` + Array.from({ length: 12 }, (_, k) => `<ellipse cx="30" cy="25.5" rx="2.3" ry="4.2" class="p" transform="rotate(${k * 30} 30 40)"/>`).join('') + `<circle cx="30" cy="40" r="10" class="r"/><circle cx="30" cy="40" r="5.5" class="p"/><circle cx="30" cy="40" r="2.8" class="b"/>`,
-    2: dot(30, 24, 10, 'g') + dot(30, 56, 10, 'b'),
-    3: dot(17, 19, 9, 'b') + dot(30, 40, 9, 'r') + dot(43, 61, 9, 'g'),
-    4: dot(18, 24, 9, 'b') + dot(42, 24, 9, 'g') + dot(18, 56, 9, 'g') + dot(42, 56, 9, 'b'),
-    5: dot(17, 22, 8, 'b') + dot(43, 22, 8, 'g') + dot(30, 40, 8, 'r') + dot(17, 58, 8, 'g') + dot(43, 58, 8, 'b'),
-    6: dot(18, 19, 8, 'g') + dot(42, 19, 8, 'g') + dot(18, 40, 8, 'r') + dot(42, 40, 8, 'r') + dot(18, 61, 8, 'r') + dot(42, 61, 8, 'r'),
-    7: dot(15, 16, 7, 'g') + dot(30, 22, 7, 'g') + dot(45, 28, 7, 'g') + dot(18, 46, 7, 'r') + dot(42, 46, 7, 'r') + dot(18, 65, 7, 'r') + dot(42, 65, 7, 'r'),
-    8: [14, 31, 49, 66].map(y => dot(18, y, 7, 'b') + dot(42, y, 7, 'b')).join(''),
-    9: [[18, 'g'], [40, 'r'], [62, 'b']].map(([y, c]) => dot(16, y, 7, c) + dot(30, y, 7, c) + dot(44, y, 7, c)).join(''),
-  };
-  const BAMS = {
-    1: bird(),
-    2: stick(30, 24, 24, 'g') + stick(30, 56, 24, 'b'),
-    3: stick(30, 22, 24, 'g') + stick(19, 56, 24, 'b') + stick(41, 56, 24, 'b'),
-    4: stick(19, 24, 24, 'b') + stick(41, 24, 24, 'g') + stick(19, 56, 24, 'g') + stick(41, 56, 24, 'b'),
-    5: stick(16, 22, 22, 'g') + stick(44, 22, 22, 'b') + stick(30, 40, 22, 'r') + stick(16, 58, 22, 'b') + stick(44, 58, 22, 'g'),
-    6: [16, 30, 44].map(x => stick(x, 24, 24, 'g') + stick(x, 56, 24, 'b')).join(''),
-    7: stick(30, 15, 20, 'r') + [16, 30, 44].map(x => stick(x, 39, 20, 'g') + stick(x, 63, 20, 'b')).join(''),
-    8: [16, 30, 44].map(x => stick(x, 17, 20, 'g') + stick(x, 63, 20, 'b')).join('') + stick(22, 40, 20, 'r') + stick(38, 40, 20, 'r'),
-    9: [[18, 'g'], [40, 'r'], [62, 'b']].map(([y, c]) => [16, 30, 44].map(x => stick(x, y, 20, c)).join('')).join(''),
-  };
-  // every flower shares one blossom and every season one sun, so the "any flower matches any flower" rule is visible on the tile
-  const blossom = () => {
-    let out = '';
-    for (let k = 0; k < 5; k++) { const a = -Math.PI / 2 + k * 2 * Math.PI / 5; out += `<circle cx="${(30 + 11 * Math.cos(a)).toFixed(1)}" cy="${(30 + 11 * Math.sin(a)).toFixed(1)}" r="8.5" class="r"/>`; }
-    out += `<circle cx="30" cy="30" r="5.5" class="y"/>`;
-    out += `<rect x="28.6" y="40" width="2.8" height="14" rx="1.4" class="g"/>`;
-    out += `<ellipse cx="23" cy="48" rx="6" ry="3" transform="rotate(-30 23 48)" class="g"/><ellipse cx="37" cy="51" rx="6" ry="3" transform="rotate(30 37 51)" class="g"/>`;
-    return out;
-  };
-  const sun = () => {
-    let out = `<circle cx="30" cy="32" r="10" class="b"/>`;
-    for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4; out += `<rect x="-1.6" y="-19" width="3.2" height="7" rx="1.6" class="b" transform="translate(30 32) rotate(${(a * 180 / Math.PI).toFixed(0)})"/>`; }
-    out += `<circle cx="30" cy="32" r="4" class="y"/>`;
-    return out;
-  };
-  // faces are lettered in Persian: she reads Farsi, not Chinese
-  const FA_DIGIT = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-  const WIND = { E: 'شرق', S: 'جنوب', W: 'غرب', N: 'شمال' };
-  const FLOWER = ['', 'آلو', 'ارکیده', 'داوودی', 'بامبو'], SEASON = ['', 'بهار', 'تابستان', 'پاییز', 'زمستان'];
-  function face(kind) {
-    let body = '';
-    if (kind.startsWith('dot')) body = DOTS[+kind.slice(3)];
-    else if (kind.startsWith('bam')) body = BAMS[+kind.slice(3)];
-    else if (kind.startsWith('crak')) { const n = +kind.slice(4); body = T(FA_DIGIT[n], 30, 28, 40, 'b') + T('هزار', 30, 61, 17, 'r'); }
-    else if (kind.startsWith('wind')) body = T(WIND[kind.slice(4)], 30, 40, 21, 'k');
-    else if (kind === 'dragR') body = T('سرخ', 30, 40, 24, 'r');
-    else if (kind === 'dragG') body = T('سبز', 30, 40, 24, 'g');
-    else if (kind === 'dragW') body = `<rect x="11" y="12" width="38" height="56" rx="3" class="fb" stroke-width="3.2"/><rect x="17" y="18" width="26" height="44" rx="2" class="fb" stroke-width="1.6"/>` + T('سفید', 30, 40, 12, 'b');
-    else if (kind.startsWith('flower')) { const n = +kind.slice(6); body = blossom() + T(FLOWER[n], 30, 68, 11, 'g') + T(FA_DIGIT[n], 10, 10, 12, 'r lat'); }
-    else if (kind.startsWith('season')) { const n = +kind.slice(6); body = sun() + T(SEASON[n], 30, 68, 11, 'b') + T(FA_DIGIT[n], 10, 10, 12, 'b lat'); }
-    return `<svg viewBox="0 0 60 80" aria-hidden="true">${RULE}${body}</svg>`;
+  const faceMarkup = kind => `<span class="face" aria-hidden="true" style="background-position:${facePosition(kind)}"></span>`;
+  function setFace(el, kind) {
+    if (el.dataset.kind === kind) return;
+    el.dataset.kind = kind;
+    el.style.backgroundPosition = facePosition(kind);
   }
-  const FACE = {}; KINDS.forEach(k => FACE[k] ||= face(k));
   const NAME = k => k.startsWith('dot') ? `${k.slice(3)} of circles` : k.startsWith('bam') ? `${k.slice(3)} of bamboo` : k.startsWith('crak') ? `${k.slice(4)} of characters`
     : k.startsWith('wind') ? ({ E: 'east', S: 'south', W: 'west', N: 'north' })[k.slice(4)] + ' wind' : k === 'dragR' ? 'red dragon' : k === 'dragG' ? 'green dragon' : k === 'dragW' ? 'white dragon'
     : k.startsWith('flower') ? 'flower' : 'season';
@@ -703,6 +639,7 @@
       b.style.top = `calc(var(--tw) * ${(p.y2 / 2 * 1.3333 + (EXT.maxZ - p.z) * 0.11 + 0.05).toFixed(3)})`;
       b.style.zIndex = p.z * 1000 + (p.x2 + p.y2) * 16 + p.x2;
       b.style.setProperty('--z', p.z);
+      b.innerHTML = faceMarkup('dot1');
       b.addEventListener('click', () => tap(i));
       board.appendChild(b); tiles[i] = b;
     }
@@ -726,22 +663,27 @@
   const fmt = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { } };
 
+  let dealFlip = false;
   function paintAll() {
     const order = POS.map((p, i) => i).sort((a, b) => POS[a].z - POS[b].z || POS[a].y2 - POS[b].y2 || POS[a].x2 - POS[b].x2);
-    let k = 0;
     for (const i of order) {
       const b = tiles[i];
-      b.innerHTML = FACE[S.kinds[i]];
+      setFace(b.firstElementChild, S.kinds[i]);
       b.setAttribute('aria-label', NAME(S.kinds[i]));
       b.classList.toggle('gone', S.removed[i]);
       b.hidden = S.removed[i];
-      b.classList.remove('selected', 'freed', 'back', 'hinted', 'deal');
-      if (!S.removed[i]) { b.style.setProperty('--d', `${Math.min(k++ * 4, 560)}ms`); void b.offsetWidth; b.classList.add('deal'); }
+      b.classList.remove('selected', 'freed', 'back', 'hinted');
     }
+    board.classList.remove('deal-a', 'deal-b');
+    board.classList.add(dealFlip ? 'deal-a' : 'deal-b');
+    dealFlip = !dealFlip;
     sel = -1;
     paintPanel();
   }
-  board.addEventListener('animationend', e => { if (e.target.classList) e.target.classList.remove('deal', 'freed', 'back', 'hinted', 'shake'); });
+  board.addEventListener('animationend', e => {
+    if (e.target === board) board.classList.remove('deal-a', 'deal-b');
+    else if (e.target.classList) e.target.classList.remove('freed', 'back', 'hinted', 'shake');
+  });
   function paintFree() {
     const pres = present();
     for (let i = 0; i < N; i++) if (pres[i]) tiles[i].classList.toggle('blocked', !isFree(i, pres));
@@ -901,7 +843,7 @@
         b.style.left = `calc(var(--tw) * ${(x * 1.03 + (maxZ - z) * 0.11 + 0.05).toFixed(3)})`;
         b.style.top = `calc(var(--tw) * ${(y * 1.3333 + (maxZ - z) * 0.11 + 0.05).toFixed(3)})`;
         b.style.zIndex = z * 10 + x * 2; b.style.setProperty('--z', z);
-        b.innerHTML = FACE[kind];
+        b.innerHTML = faceMarkup(kind);
         demo.appendChild(b);
       }
     }
