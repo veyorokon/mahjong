@@ -35,8 +35,8 @@ check('fresh-deal motion is one board animation, never 144 tile animations', () 
   assert.doesNotMatch(html, /filter: drop-shadow/);
 });
 
-check('blocked tiles are visibly subordinate without an expensive filter', () => {
-  assert.match(html, /\.tile\.blocked \.face \{ opacity: 0\.32; \}/);
+check('blocked tiles use a darker body without muting their face artwork', () => {
   assert.match(html, /linear-gradient\(160deg, #aaa99d, #96978b 52%, #85877c\)/);
+  assert.doesNotMatch(html, /\.tile\.blocked \.face/);
   assert.doesNotMatch(html, /\.tile\.blocked[^}]*filter:/s);
 });
